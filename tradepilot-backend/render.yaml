@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: tradepilot-backend
+    env: node
+    plan: free
+    rootDir: tradepilot-backend
+    buildCommand: npm install && npx prisma migrate deploy && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false # set manually in the Render dashboard
+      - key: JWT_SECRET
+        sync: false # set manually in the Render dashboard
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: CORS_ORIGIN
+        sync: false # your deployed Vercel frontend URL

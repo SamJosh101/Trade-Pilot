@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String           @id @default(uuid())
+  name      String
+  email     String           @unique
+  password  String // bcrypt hash, never plaintext
+  createdAt DateTime         @default(now())
+  trades    Trade[]
+  accounts  TradingAccount[]
+
+  @@index([email])
+}
+
+enum Direction {
+  BUY
+  SELL
+}
+
+enum Result {
+  WIN
+  LOSS
+  BE
+}
+
+model TradingAccount {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name            String
+  broker          String?
+  accountType     String?  // e.g. "DEMO", "LIVE", "CHALLENGE" — plain string, not enum, for flexibility
+  startingBalance Decimal  @db.Decimal(12, 2)
+  currency        String   @default("USD")
+  createdAt       DateTime @default(now())
+  trades          Trade[]
+
+  @@index([userId])
+}
+
+model Trade {
+  id        String            @id @default(uuid())
+  userId    String
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountId String
+  account   TradingAccount    @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  pair      String
+  direction Direction
+  entry     Decimal   @db.Decimal(10, 5)
+  sl        Decimal   @db.Decimal(10, 5)
+  tp        Decimal   @db.Decimal(10, 5)
+  rr        Decimal?  @db.Decimal(5, 2)
+  timeframe String?
+  result    Result?
+  notes     String?
+  imageUrl  String?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([userId, pair])
+}
