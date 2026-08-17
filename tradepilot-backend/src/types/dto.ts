@@ -21,7 +21,7 @@ export interface TradeInput {
   timeframe?: string;
   result?: Result;
   notes?: string;
-  imageUrl?: string;
+  imageUrl?: string | null;
 }
 
 export type TradeUpdateInput = Partial<TradeInput>;

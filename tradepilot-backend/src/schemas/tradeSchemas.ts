@@ -10,7 +10,7 @@ export const tradeSchema = z.object({
   timeframe: z.string().optional(),
   result: z.enum(["WIN", "LOSS", "BE"]).optional(),
   notes: z.string().optional(),
-  imageUrl: z.string().url().optional(),
+  imageUrl: z.string().url().nullable().optional(),
 });
 
 // Used on PUT /api/trades/:id — every field optional, same rules when present.
