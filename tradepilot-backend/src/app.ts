@@ -9,9 +9,17 @@ import { env } from "./config/env";
 const app = express();
 
 app.use(helmet());
-// Allow multiple origins for development
-const corsOrigins = env.corsOrigin.split(',').map(o => o.trim());
-app.use(cors({ origin: corsOrigins }));
+app.use(cors({
+  origin: env.nodeEnv === "production"
+    ? env.corsOrigin
+    : (origin, callback) => {
+        if (!origin || /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error("Not allowed by CORS"));
+        }
+      },
+}));
 app.use(express.json());
 
 if (env.nodeEnv !== "production") {
