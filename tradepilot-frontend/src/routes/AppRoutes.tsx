@@ -8,7 +8,7 @@ import EditTrade from '../pages/EditTrade'
 import Landing from '../pages/Landing'
 import Login from '../pages/Login'
 import Register from '../pages/Register'
-import TradeHistory from '../pages/TradeHistory'
+import Trades from '../pages/Trades'
 import ProtectedRoute from './ProtectedRoute'
 
 export default function AppRoutes() {
@@ -27,7 +27,7 @@ export default function AppRoutes() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/trades/:id/edit" element={<EditTrade />} />
         <Route path="/trades/new" element={<AddTrade />} />
-        <Route path="/trades" element={<TradeHistory />} />
+        <Route path="/trades" element={<Trades />} />
         <Route path="/analytics" element={<Analytics />} />
         <Route path="/accounts" element={<Accounts />} />
       </Route>

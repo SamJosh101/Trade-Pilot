@@ -37,6 +37,7 @@ export default function EditTrade() {
           timeframe: trade.timeframe ?? undefined,
           result: trade.result ?? undefined,
           notes: trade.notes ?? undefined,
+          imageUrl: trade.imageUrl ?? undefined,
         })
       } catch (err) {
         if (axios.isAxiosError(err) && err.response?.status === 404) {
@@ -75,7 +76,7 @@ export default function EditTrade() {
   if (isLoading) {
     return (
       <div>
-        <h1 className="text-2xl font-semibold text-slate-950">Edit Trade</h1>
+        <h1 className="text-2xl font-semibold text-text-primary">Edit Trade</h1>
         <p className="mt-2 text-slate-600">Loading trade...</p>
       </div>
     )
@@ -84,15 +85,24 @@ export default function EditTrade() {
   if (notFound) {
     return (
       <div>
-        <h1 className="text-2xl font-semibold text-slate-950">Edit Trade</h1>
+        <h1 className="text-2xl font-semibold text-text-primary">Edit Trade</h1>
         <p className="mt-2 text-slate-600">Trade not found</p>
+      </div>
+    )
+  }
+
+  if (accountsLoading) {
+    return (
+      <div>
+        <h1 className="text-2xl font-semibold text-text-primary">Edit Trade</h1>
+        <p className="mt-2 text-slate-600">Loading accounts...</p>
       </div>
     )
   }
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-slate-950">Edit Trade</h1>
+      <h1 className="text-2xl font-semibold text-text-primary">Edit Trade</h1>
       <div className="mt-6 max-w-2xl">
         {error && (
           <div className="mb-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">

@@ -9,26 +9,26 @@ export default function Landing() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12">
+    <main className="flex min-h-screen items-center justify-center bg-bg-base px-4 py-12">
       <section className="w-full max-w-lg text-center">
-        <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+        <p className="text-sm font-semibold uppercase tracking-wide text-accent">
           TradePilot
         </p>
-        <h1 className="mt-4 text-4xl font-semibold text-slate-950">
+        <h1 className="mt-4 text-4xl font-semibold text-text-primary">
           Trade journal authentication
         </h1>
-        <p className="mt-4 text-base text-slate-600">
+        <p className="mt-4 text-base text-text-muted">
           Sign in or create an account to continue to your dashboard.
         </p>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
           <Link
-            className="rounded-md bg-slate-950 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800"
+            className="rounded-md bg-accent px-5 py-3 text-sm font-medium text-white transition hover:bg-accent-hover"
             to="/login"
           >
             Login
           </Link>
           <Link
-            className="rounded-md border border-slate-300 bg-white px-5 py-3 text-sm font-medium text-slate-950 transition hover:bg-slate-100"
+            className="rounded-md border border-border-subtle bg-bg-surface px-5 py-3 text-sm font-medium text-text-primary transition hover:bg-bg-surface-hover"
             to="/register"
           >
             Register

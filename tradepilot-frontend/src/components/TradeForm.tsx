@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import type { Direction, TradeInput, TradeResult } from '../types/trade'
+import FormField, { inputClasses } from './FormField'
+import { uploadScreenshot } from '../services/uploadService'
 
 type TradeFormProps = {
   initialValues?: Partial<TradeInput>
@@ -9,6 +11,9 @@ type TradeFormProps = {
   isSubmitting: boolean
   availableAccounts: Array<{ id: string; name: string }>
 }
+
+const MAX_SCREENSHOT_BYTES = 5 * 1024 * 1024
+const ACCEPTED_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp']
 
 export default function TradeForm({
   initialValues,
@@ -27,6 +32,11 @@ export default function TradeForm({
   const [result, setResult] = useState<TradeResult | ''>(initialValues?.result ?? '')
   const [notes, setNotes] = useState(initialValues?.notes ?? '')
 
+  const [imageUrl, setImageUrl] = useState<string | undefined>(initialValues?.imageUrl ?? undefined)
+  const [previewUrl, setPreviewUrl] = useState<string | undefined>(initialValues?.imageUrl ?? undefined)
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadError, setUploadError] = useState('')
+
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   function validate(): boolean {
@@ -40,23 +50,65 @@ export default function TradeForm({
       newErrors.pair = 'Pair is required'
     }
 
-    const entryNum = parseFloat(entry)
+    const entryNum = parseFloat(String(entry))
     if (!entry || isNaN(entryNum) || entryNum <= 0) {
       newErrors.entry = 'Entry must be a positive number'
     }
 
-    const slNum = parseFloat(sl)
+    const slNum = parseFloat(String(sl))
     if (!sl || isNaN(slNum) || slNum <= 0) {
       newErrors.sl = 'SL must be a positive number'
     }
 
-    const tpNum = parseFloat(tp)
+    const tpNum = parseFloat(String(tp))
     if (!tp || isNaN(tpNum) || tpNum <= 0) {
       newErrors.tp = 'TP must be a positive number'
     }
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
+  }
+
+  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    if (!file) {
+      return
+    }
+
+    setUploadError('')
+
+    if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+      setUploadError('Screenshot must be a PNG, JPEG, or WEBP image')
+      event.target.value = ''
+      return
+    }
+
+    if (file.size > MAX_SCREENSHOT_BYTES) {
+      setUploadError('Screenshot must be under 5MB')
+      event.target.value = ''
+      return
+    }
+
+    const localPreview = URL.createObjectURL(file)
+    setPreviewUrl(localPreview)
+    setIsUploading(true)
+
+    try {
+      const uploadedUrl = await uploadScreenshot(file)
+      setImageUrl(uploadedUrl)
+      setPreviewUrl(uploadedUrl)
+    } catch (err) {
+      setUploadError('Screenshot upload failed')
+      console.error(err)
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
+  function handleRemoveScreenshot() {
+    setImageUrl(undefined)
+    setPreviewUrl(undefined)
+    setUploadError('')
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -70,21 +122,21 @@ export default function TradeForm({
       accountId,
       pair: pair.trim(),
       direction,
-      entry: parseFloat(entry),
-      sl: parseFloat(sl),
-      tp: parseFloat(tp),
+      entry: parseFloat(String(entry)),
+      sl: parseFloat(String(sl)),
+      tp: parseFloat(String(tp)),
       timeframe: timeframe.trim() || undefined,
       result: result || undefined,
       notes: notes.trim() || undefined,
+      imageUrl: imageUrl || undefined,
     })
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <label className="block text-left text-sm font-medium text-slate-700">
-        Account
+      <FormField label="Account" error={errors.accountId}>
         <select
-          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+          className={inputClasses}
           name="accountId"
           onChange={(event) => setAccountId(event.target.value)}
           required
@@ -97,25 +149,21 @@ export default function TradeForm({
             </option>
           ))}
         </select>
-        {errors.accountId && <p className="mt-1 text-sm text-red-600">{errors.accountId}</p>}
-      </label>
+      </FormField>
 
-      <label className="block text-left text-sm font-medium text-slate-700">
-        Pair
+      <FormField label="Pair" error={errors.pair}>
         <input
-          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+          className={inputClasses}
           name="pair"
           onChange={(event) => setPair(event.target.value)}
           type="text"
           value={pair}
         />
-        {errors.pair && <p className="mt-1 text-sm text-red-600">{errors.pair}</p>}
-      </label>
+      </FormField>
 
-      <label className="block text-left text-sm font-medium text-slate-700">
-        Direction
+      <FormField label="Direction">
         <select
-          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+          className={inputClasses}
           name="direction"
           onChange={(event) => setDirection(event.target.value as Direction)}
           required
@@ -124,12 +172,11 @@ export default function TradeForm({
           <option value="BUY">BUY</option>
           <option value="SELL">SELL</option>
         </select>
-      </label>
+      </FormField>
 
-      <label className="block text-left text-sm font-medium text-slate-700">
-        Entry
+      <FormField label="Entry" error={errors.entry}>
         <input
-          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+          className={inputClasses}
           name="entry"
           onChange={(event) => setEntry(event.target.value)}
           required
@@ -137,13 +184,11 @@ export default function TradeForm({
           type="number"
           value={entry}
         />
-        {errors.entry && <p className="mt-1 text-sm text-red-600">{errors.entry}</p>}
-      </label>
+      </FormField>
 
-      <label className="block text-left text-sm font-medium text-slate-700">
-        Stop Loss (SL)
+      <FormField label="Stop Loss (SL)" error={errors.sl}>
         <input
-          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+          className={inputClasses}
           name="sl"
           onChange={(event) => setSl(event.target.value)}
           required
@@ -151,13 +196,11 @@ export default function TradeForm({
           type="number"
           value={sl}
         />
-        {errors.sl && <p className="mt-1 text-sm text-red-600">{errors.sl}</p>}
-      </label>
+      </FormField>
 
-      <label className="block text-left text-sm font-medium text-slate-700">
-        Take Profit (TP)
+      <FormField label="Take Profit (TP)" error={errors.tp}>
         <input
-          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+          className={inputClasses}
           name="tp"
           onChange={(event) => setTp(event.target.value)}
           required
@@ -165,49 +208,73 @@ export default function TradeForm({
           type="number"
           value={tp}
         />
-        {errors.tp && <p className="mt-1 text-sm text-red-600">{errors.tp}</p>}
-      </label>
+      </FormField>
 
-      <label className="block text-left text-sm font-medium text-slate-700">
-        Timeframe (optional)
+      <FormField label="Timeframe (optional)">
         <input
-          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+          className={inputClasses}
           name="timeframe"
           onChange={(event) => setTimeframe(event.target.value)}
           type="text"
           value={timeframe}
         />
-      </label>
+      </FormField>
 
-      <label className="block text-left text-sm font-medium text-slate-700">
-        Result (optional)
+      <FormField label="Result (optional)">
         <select
-          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+          className={inputClasses}
           name="result"
           onChange={(event) => setResult(event.target.value as TradeResult | '')}
           value={result}
         >
-          <option value="">—</option>
+          <option value="">None</option>
           <option value="WIN">WIN</option>
           <option value="LOSS">LOSS</option>
           <option value="BE">BE</option>
         </select>
-      </label>
+      </FormField>
 
-      <label className="block text-left text-sm font-medium text-slate-700">
-        Notes (optional)
+      <FormField label="Notes (optional)">
         <textarea
-          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+          className={inputClasses}
           name="notes"
           onChange={(event) => setNotes(event.target.value)}
           rows={3}
           value={notes}
         />
-      </label>
+      </FormField>
+
+      <FormField label="Screenshot (optional)" error={uploadError}>
+        <input
+          accept="image/png,image/jpeg,image/webp"
+          className={inputClasses}
+          onChange={handleFileChange}
+          type="file"
+        />
+        {previewUrl && (
+          <div className="mt-2 flex items-center gap-3">
+            <img
+              alt="Trade screenshot preview"
+              className="h-20 w-20 rounded-md border border-border-subtle object-cover"
+              src={previewUrl}
+            />
+            <div className="flex flex-col gap-1">
+              {isUploading && <span className="text-sm text-text-muted">Uploading...</span>}
+              <button
+                className="text-sm text-negative hover:opacity-80"
+                onClick={handleRemoveScreenshot}
+                type="button"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        )}
+      </FormField>
 
       <button
-        className="w-full rounded-md bg-slate-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
-        disabled={isSubmitting}
+        className="w-full rounded-md bg-accent px-4 py-2.5 text-sm font-medium text-white transition hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
+        disabled={isSubmitting || isUploading}
         type="submit"
       >
         {isSubmitting ? 'Submitting...' : submitLabel}

@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
 import * as accountService from '../services/accountService'
+import { useAuth } from '../hooks/useAuth'
 import type { TradingAccount, AccountInput } from '../types/account'
 
 type AccountContextValue = {
@@ -19,6 +20,7 @@ type AccountProviderProps = {
 }
 
 export function AccountProvider({ children }: AccountProviderProps) {
+  const { token, isLoading: authLoading } = useAuth()
   const [accounts, setAccounts] = useState<TradingAccount[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -37,10 +39,20 @@ export function AccountProvider({ children }: AccountProviderProps) {
     }
   }, [])
 
-  // Auto-fetch accounts on provider mount
   useEffect(() => {
+    if (authLoading) {
+      return
+    }
+
+    if (!token) {
+      setAccounts([])
+      setError('')
+      setIsLoading(false)
+      return
+    }
+
     fetchAccounts()
-  }, [fetchAccounts])
+  }, [authLoading, fetchAccounts, token])
 
   const addAccount = useCallback(async (input: AccountInput) => {
     await accountService.create(input)

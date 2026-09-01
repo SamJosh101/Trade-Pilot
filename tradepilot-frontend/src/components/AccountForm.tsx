@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import type { AccountInput } from '../types/account'
+import FormField, { inputClasses } from './FormField'
 
 type AccountFormProps = {
   initialValues?: Partial<AccountInput>
@@ -18,7 +19,9 @@ export default function AccountForm({
   const [name, setName] = useState(initialValues?.name ?? '')
   const [broker, setBroker] = useState(initialValues?.broker ?? '')
   const [accountType, setAccountType] = useState(initialValues?.accountType ?? '')
-  const [startingBalance, setStartingBalance] = useState(initialValues?.startingBalance ?? '')
+  const [startingBalance, setStartingBalance] = useState(
+    initialValues?.startingBalance !== undefined ? String(initialValues.startingBalance) : '',
+  )
   const [currency, setCurrency] = useState(initialValues?.currency ?? 'USD')
 
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -57,44 +60,39 @@ export default function AccountForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <label className="block text-left text-sm font-medium text-slate-700">
-        Name
+      <FormField label="Name" error={errors.name}>
         <input
-          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+          className={inputClasses}
           name="name"
           onChange={(event) => setName(event.target.value)}
           type="text"
           value={name}
         />
-        {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
-      </label>
+      </FormField>
 
-      <label className="block text-left text-sm font-medium text-slate-700">
-        Broker (optional)
+      <FormField label="Broker (optional)">
         <input
-          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+          className={inputClasses}
           name="broker"
           onChange={(event) => setBroker(event.target.value)}
           type="text"
           value={broker}
         />
-      </label>
+      </FormField>
 
-      <label className="block text-left text-sm font-medium text-slate-700">
-        Account Type (optional)
+      <FormField label="Account Type (optional)">
         <input
-          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+          className={inputClasses}
           name="accountType"
           onChange={(event) => setAccountType(event.target.value)}
           type="text"
           value={accountType}
         />
-      </label>
+      </FormField>
 
-      <label className="block text-left text-sm font-medium text-slate-700">
-        Starting Balance
+      <FormField label="Starting Balance" error={errors.startingBalance}>
         <input
-          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+          className={inputClasses}
           name="startingBalance"
           onChange={(event) => setStartingBalance(event.target.value)}
           required
@@ -102,22 +100,20 @@ export default function AccountForm({
           type="number"
           value={startingBalance}
         />
-        {errors.startingBalance && <p className="mt-1 text-sm text-red-600">{errors.startingBalance}</p>}
-      </label>
+      </FormField>
 
-      <label className="block text-left text-sm font-medium text-slate-700">
-        Currency (optional)
+      <FormField label="Currency (optional)">
         <input
-          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+          className={inputClasses}
           name="currency"
           onChange={(event) => setCurrency(event.target.value)}
           type="text"
           value={currency}
         />
-      </label>
+      </FormField>
 
       <button
-        className="w-full rounded-md bg-slate-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+        className="w-full rounded-md bg-accent px-4 py-2.5 text-sm font-medium text-white transition hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
         disabled={isSubmitting}
         type="submit"
       >

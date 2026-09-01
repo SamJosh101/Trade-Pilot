@@ -1,13 +1,22 @@
 type MetricCardProps = {
   label: string
   value: string | number
+  tone?: 'positive' | 'negative' | 'neutral'
 }
 
-export default function MetricCard({ label, value }: MetricCardProps) {
+const toneClassName = {
+  positive: 'text-positive',
+  negative: 'text-negative',
+  neutral: 'text-text-primary',
+}
+
+export default function MetricCard({ label, value, tone = 'neutral' }: MetricCardProps) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-      <p className="text-sm font-medium text-slate-600">{label}</p>
-      <p className="mt-2 text-2xl font-semibold text-slate-950">{value}</p>
+    <div className="rounded-lg border border-border-subtle bg-bg-surface p-4">
+      <p className="text-xs font-medium text-text-muted">{label}</p>
+      <p className={`mt-3 font-mono-data text-2xl tabular-nums ${toneClassName[tone]}`}>
+        {value}
+      </p>
     </div>
   )
 }

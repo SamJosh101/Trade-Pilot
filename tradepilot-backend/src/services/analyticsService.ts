@@ -67,3 +67,84 @@ export async function getAnalytics(userId: string, accountId?: string) {
 
   return { equityCurve, pairBreakdown, winLossBreakdown, directionBreakdown };
 }
+
+export async function getCalendar(userId: string, month: string) {
+  const [year, monthNumber] = month.split("-").map(Number);
+  const monthIndex = monthNumber - 1;
+  const startDate = new Date(Date.UTC(year, monthIndex, 1, 0, 0, 0, 0));
+  const endDate = new Date(Date.UTC(year, monthIndex + 1, 0, 23, 59, 59, 999));
+
+  const trades = await prisma.trade.findMany({
+    where: {
+      userId,
+      createdAt: {
+        gte: startDate,
+        lte: endDate,
+      },
+    },
+    orderBy: { createdAt: "asc" },
+    select: {
+      id: true,
+      pair: true,
+      direction: true,
+      entry: true,
+      rr: true,
+      result: true,
+      timeframe: true,
+      createdAt: true,
+    },
+  });
+
+  const daysByDate = new Map<
+    string,
+    {
+      date: string;
+      netRR: number;
+      tradeCount: number;
+      trades: Array<{
+        id: string;
+        pair: string;
+        direction: string;
+        entry: string;
+        rr: string | null;
+        result: string | null;
+        timeframe: string | null;
+        createdAt: Date;
+      }>;
+    }
+  >();
+
+  for (const trade of trades) {
+    const date = trade.createdAt.toISOString().slice(0, 10);
+    const day = daysByDate.get(date) ?? {
+      date,
+      netRR: 0,
+      tradeCount: 0,
+      trades: [],
+    };
+
+    day.netRR += trade.rr ? Number(trade.rr) : 0;
+    day.tradeCount += 1;
+    day.trades.push({
+      id: trade.id,
+      pair: trade.pair,
+      direction: trade.direction,
+      entry: trade.entry.toString(),
+      rr: trade.rr?.toString() ?? null,
+      result: trade.result,
+      timeframe: trade.timeframe,
+      createdAt: trade.createdAt,
+    });
+
+    daysByDate.set(date, day);
+  }
+
+  const days = Array.from(daysByDate.values())
+    .map((day) => ({
+      ...day,
+      netRR: Number(day.netRR.toFixed(2)),
+    }))
+    .sort((a, b) => b.date.localeCompare(a.date));
+
+  return { month, days };
+}

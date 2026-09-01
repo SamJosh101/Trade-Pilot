@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { useState } from 'react'
 import { useAccounts } from '../context/AccountContext'
 import AccountForm from '../components/AccountForm'
@@ -32,8 +33,8 @@ export default function Accounts() {
     if (confirm('Are you sure you want to delete this account?')) {
       try {
         await removeAccount(id)
-      } catch (err: any) {
-        if (err.response?.status === 409) {
+      } catch (err) {
+        if (axios.isAxiosError(err) && err.response?.status === 409) {
           setDeleteError('Cannot delete an account with trades')
         } else {
           setDeleteError('Failed to delete account')
@@ -55,8 +56,8 @@ export default function Accounts() {
   if (isLoading) {
     return (
       <div>
-        <h1 className="text-2xl font-semibold text-slate-950">Accounts</h1>
-        <p className="mt-2 text-slate-600">Loading accounts...</p>
+        <h1 className="text-2xl font-semibold text-text-primary">Accounts</h1>
+        <p className="mt-2 text-text-muted">Loading accounts...</p>
       </div>
     )
   }
@@ -64,12 +65,12 @@ export default function Accounts() {
   if (error) {
     return (
       <div>
-        <h1 className="text-2xl font-semibold text-slate-950">Accounts</h1>
-        <div className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+        <h1 className="text-2xl font-semibold text-text-primary">Accounts</h1>
+        <div className="mt-4 rounded-md border border-negative/30 bg-negative/10 px-3 py-2 text-sm text-negative">
           {error}
           <button
             onClick={fetchAccounts}
-            className="ml-3 rounded-md bg-red-700 px-3 py-1 text-sm font-medium text-white transition hover:bg-red-800"
+            className="ml-3 rounded-md bg-accent px-3 py-1 text-sm font-medium text-text-primary transition hover:bg-accent-hover"
           >
             Retry
           </button>
@@ -81,19 +82,29 @@ export default function Accounts() {
   if (showForm) {
     return (
       <div>
-        <h1 className="text-2xl font-semibold text-slate-950">
+        <h1 className="text-2xl font-semibold text-text-primary">
           {editingAccount ? 'Edit Account' : 'Add Account'}
         </h1>
         <div className="mt-6 max-w-md">
           <AccountForm
-            initialValues={editingAccount || undefined}
+            initialValues={
+              editingAccount
+                ? {
+                    name: editingAccount.name,
+                    broker: editingAccount.broker ?? undefined,
+                    accountType: editingAccount.accountType ?? undefined,
+                    startingBalance: parseFloat(editingAccount.startingBalance),
+                    currency: editingAccount.currency,
+                  }
+                : undefined
+            }
             onSubmit={handleSubmit}
             submitLabel={editingAccount ? 'Update Account' : 'Create Account'}
             isSubmitting={isSubmitting}
           />
           <button
             onClick={handleCancel}
-            className="mt-4 w-full rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            className="mt-4 w-full rounded-md border border-border-subtle px-4 py-2 text-sm font-medium text-text-muted transition hover:bg-bg-surface-hover hover:text-text-primary"
           >
             Cancel
           </button>
@@ -105,29 +116,29 @@ export default function Accounts() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-slate-950">Accounts</h1>
+        <h1 className="text-2xl font-semibold text-text-primary">Accounts</h1>
         <button
           onClick={() => setShowForm(true)}
-          className="rounded-md bg-slate-950 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
+          className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-text-primary transition hover:bg-accent-hover"
         >
           Add Account
         </button>
       </div>
 
       {deleteError && (
-        <div className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+        <div className="mt-4 rounded-md border border-negative/30 bg-negative/10 px-3 py-2 text-sm text-negative">
           {deleteError}
         </div>
       )}
 
       {accounts.length === 0 ? (
-        <p className="mt-2 text-slate-600">No accounts yet</p>
+        <p className="mt-2 text-text-muted">No accounts yet</p>
       ) : (
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {accounts.map((account) => (
-            <div key={account.id} className="rounded-md border border-slate-200 p-4">
-              <h3 className="text-lg font-medium text-slate-950">{account.name}</h3>
-              <div className="mt-2 space-y-1 text-sm text-slate-600">
+            <div key={account.id} className="rounded-md border border-border-subtle bg-bg-surface p-4">
+              <h3 className="text-lg font-medium text-text-primary">{account.name}</h3>
+              <div className="mt-2 space-y-1 text-sm text-text-muted">
                 <p>
                   <span className="font-medium">Broker:</span> {account.broker || '—'}
                 </p>
@@ -141,13 +152,13 @@ export default function Accounts() {
               <div className="mt-4 flex gap-2">
                 <button
                   onClick={() => handleEdit(account)}
-                  className="rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                  className="rounded-md border border-border-subtle px-3 py-1.5 text-sm font-medium text-text-muted transition hover:bg-bg-surface-hover hover:text-text-primary"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(account.id)}
-                  className="rounded-md border border-red-300 px-3 py-1.5 text-sm font-medium text-red-600 transition hover:bg-red-50"
+                  className="rounded-md border border-negative/40 px-3 py-1.5 text-sm font-medium text-negative transition hover:bg-negative/10"
                 >
                   Delete
                 </button>

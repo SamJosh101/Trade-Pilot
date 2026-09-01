@@ -3,6 +3,7 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import FormField, { inputClasses } from '../components/FormField'
 
 function getErrorMessage(error: unknown) {
   if (axios.isAxiosError<{ error?: string }>(error)) {
@@ -36,46 +37,44 @@ export default function Login() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12">
-      <section className="w-full max-w-md rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-        <h1 className="text-2xl font-semibold text-slate-950">Login</h1>
-        <p className="mt-2 text-sm text-slate-600">
+    <main className="flex min-h-screen items-center justify-center bg-bg-base px-4 py-12">
+      <section className="w-full max-w-md rounded-lg border border-border-subtle bg-bg-surface p-8">
+        <h1 className="text-2xl font-semibold text-text-primary">Login</h1>
+        <p className="mt-2 text-sm text-text-muted">
           Access your TradePilot dashboard.
         </p>
 
         <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
-          <label className="block text-left text-sm font-medium text-slate-700">
-            Email
+          <FormField label="Email">
             <input
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+              className={inputClasses}
               name="email"
               onChange={(event) => setEmail(event.target.value)}
               required
               type="email"
               value={email}
             />
-          </label>
+          </FormField>
 
-          <label className="block text-left text-sm font-medium text-slate-700">
-            Password
+          <FormField label="Password">
             <input
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+              className={inputClasses}
               name="password"
               onChange={(event) => setPassword(event.target.value)}
               required
               type="password"
               value={password}
             />
-          </label>
+          </FormField>
 
           {error ? (
-            <p className="rounded-md bg-red-50 px-3 py-2 text-left text-sm text-red-700">
+            <p className="rounded-md border border-negative/30 bg-negative/10 px-3 py-2 text-left text-sm text-negative">
               {error}
             </p>
           ) : null}
 
           <button
-            className="w-full rounded-md bg-slate-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-full rounded-md bg-accent px-4 py-2.5 text-sm font-medium text-white transition hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
             disabled={isSubmitting}
             type="submit"
           >
@@ -83,9 +82,9 @@ export default function Login() {
           </button>
         </form>
 
-        <p className="mt-5 text-sm text-slate-600">
+        <p className="mt-5 text-sm text-text-muted">
           Need an account?{' '}
-          <Link className="font-medium text-emerald-700 hover:text-emerald-800" to="/register">
+          <Link className="font-medium text-accent hover:text-accent-hover" to="/register">
             Register
           </Link>
         </p>

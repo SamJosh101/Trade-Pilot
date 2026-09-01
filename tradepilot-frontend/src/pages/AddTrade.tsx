@@ -33,7 +33,7 @@ export default function AddTrade() {
   if (accountsLoading) {
     return (
       <div>
-        <h1 className="text-2xl font-semibold text-slate-950">Add Trade</h1>
+        <h1 className="text-2xl font-semibold text-text-primary">Add Trade</h1>
         <p className="mt-2 text-slate-600">Loading accounts...</p>
       </div>
     )
@@ -42,7 +42,7 @@ export default function AddTrade() {
   if (accounts.length === 0) {
     return (
       <div>
-        <h1 className="text-2xl font-semibold text-slate-950">Add Trade</h1>
+        <h1 className="text-2xl font-semibold text-text-primary">Add Trade</h1>
         <p className="mt-2 text-slate-600">No accounts available. Please create an account first.</p>
       </div>
     )
@@ -53,7 +53,7 @@ export default function AddTrade() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-slate-950">Add Trade</h1>
+      <h1 className="text-2xl font-semibold text-text-primary">Add Trade</h1>
       <div className="mt-6 max-w-2xl">
         {error && (
           <div className="mb-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">

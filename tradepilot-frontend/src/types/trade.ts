@@ -27,4 +27,17 @@ export type TradeInput = {
   timeframe?: string
   result?: TradeResult
   notes?: string
+  imageUrl?: string | null
+}
+
+export type CalendarDay = {
+  date: string
+  netRR: number
+  tradeCount: number
+  trades: Trade[]
+}
+
+export type CalendarResponse = {
+  month: string
+  days: CalendarDay[]
 }

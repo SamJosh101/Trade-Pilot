@@ -5,6 +5,7 @@ import * as analyticsController from "../controllers/analyticsController";
 const router = Router();
 
 router.use(authMiddleware);
+router.get("/calendar", analyticsController.getCalendar);
 router.get("/", analyticsController.getAnalytics);
 
 export default router;
