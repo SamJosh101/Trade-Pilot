@@ -68,20 +68,25 @@ export async function getAnalytics(userId: string, accountId?: string) {
   return { equityCurve, pairBreakdown, winLossBreakdown, directionBreakdown };
 }
 
-export async function getCalendar(userId: string, month: string) {
+export async function getCalendar(userId: string, month: string, accountId?: string) {
   const [year, monthNumber] = month.split("-").map(Number);
   const monthIndex = monthNumber - 1;
   const startDate = new Date(Date.UTC(year, monthIndex, 1, 0, 0, 0, 0));
   const endDate = new Date(Date.UTC(year, monthIndex + 1, 0, 23, 59, 59, 999));
 
-  const trades = await prisma.trade.findMany({
-    where: {
-      userId,
-      createdAt: {
-        gte: startDate,
-        lte: endDate,
-      },
+  const where: any = {
+    userId,
+    createdAt: {
+      gte: startDate,
+      lte: endDate,
     },
+  };
+  if (accountId) {
+    where.accountId = accountId;
+  }
+
+  const trades = await prisma.trade.findMany({
+    where,
     orderBy: { createdAt: "asc" },
     select: {
       id: true,

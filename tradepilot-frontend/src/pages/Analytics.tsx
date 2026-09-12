@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts'
+import { useAccounts } from '../context/AccountContext'
 import * as analyticsService from '../services/analyticsService'
 import type { Analytics } from '../types/analytics'
 import MetricCard from '../components/MetricCard'
 
 export default function Analytics() {
+  const { activeAccountId, activeAccount } = useAccounts()
   const [analytics, setAnalytics] = useState<Analytics | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
@@ -13,7 +15,7 @@ export default function Analytics() {
   useEffect(() => {
     async function fetchAnalytics() {
       try {
-        const data = await analyticsService.getAnalytics()
+        const data = await analyticsService.getAnalytics(activeAccountId ?? undefined)
         setAnalytics(data)
         setError('')
       } catch (err) {
@@ -25,13 +27,13 @@ export default function Analytics() {
     }
 
     fetchAnalytics()
-  }, [])
+  }, [activeAccountId])
 
   function handleRetry() {
     setIsLoading(true)
     setError('')
     analyticsService
-      .getAnalytics()
+      .getAnalytics(activeAccountId ?? undefined)
       .then((data) => {
         setAnalytics(data)
         setError('')
@@ -97,7 +99,14 @@ export default function Analytics() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-text-primary">Analytics</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold text-text-primary">Analytics</h1>
+        {activeAccount && (
+          <div className="text-sm text-text-muted">
+            Active Account: <span className="font-medium text-text-primary">{activeAccount.name}</span>
+          </div>
+        )}
+      </div>
 
       {/* Equity Curve */}
       {analytics.equityCurve.length > 0 && (

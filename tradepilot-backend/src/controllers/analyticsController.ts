@@ -14,6 +14,7 @@ export async function getAnalytics(req: Request, res: Response, next: NextFuncti
 export async function getCalendar(req: Request, res: Response, next: NextFunction) {
   try {
     const requestedMonth = req.query.month as string | undefined;
+    const accountId = req.query.accountId as string | undefined;
     const currentMonth = new Date().toISOString().slice(0, 7);
     const month = requestedMonth ?? currentMonth;
 
@@ -29,7 +30,7 @@ export async function getCalendar(req: Request, res: Response, next: NextFunctio
       return;
     }
 
-    const calendar = await analyticsService.getCalendar(req.user!.id, month);
+    const calendar = await analyticsService.getCalendar(req.user!.id, month, accountId);
     res.status(200).json(calendar);
   } catch (err) {
     next(err);

@@ -5,12 +5,15 @@ import type { TradingAccount, AccountInput } from '../types/account'
 
 type AccountContextValue = {
   accounts: TradingAccount[]
+  activeAccountId: string | null
+  activeAccount: TradingAccount | null
   isLoading: boolean
   error: string
   fetchAccounts: () => Promise<void>
   addAccount: (input: AccountInput) => Promise<void>
   updateAccount: (id: string, input: Partial<AccountInput>) => Promise<void>
   removeAccount: (id: string) => Promise<void>
+  setActiveAccount: (id: string | null) => void
 }
 
 const AccountContext = createContext<AccountContextValue | undefined>(undefined)
@@ -22,8 +25,23 @@ type AccountProviderProps = {
 export function AccountProvider({ children }: AccountProviderProps) {
   const { token, isLoading: authLoading } = useAuth()
   const [accounts, setAccounts] = useState<TradingAccount[]>([])
+  const [activeAccountId, setActiveAccountIdState] = useState<string | null>(() => {
+    const stored = localStorage.getItem('activeAccountId')
+    return stored || null
+  })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+
+  const activeAccount = accounts.find((a) => a.id === activeAccountId) ?? null
+
+  const setActiveAccount = useCallback((id: string | null) => {
+    setActiveAccountIdState(id)
+    if (id) {
+      localStorage.setItem('activeAccountId', id)
+    } else {
+      localStorage.removeItem('activeAccountId')
+    }
+  }, [])
 
   const fetchAccounts = useCallback(async () => {
     setIsLoading(true)
@@ -31,13 +49,18 @@ export function AccountProvider({ children }: AccountProviderProps) {
     try {
       const data = await accountService.getAll()
       setAccounts(data)
+      
+      // If no active account is set, or the stored one no longer exists, default to first account
+      if (data.length > 0 && (!activeAccountId || !data.find((a) => a.id === activeAccountId))) {
+        setActiveAccount(data[0].id)
+      }
     } catch (err) {
       setError('Failed to load accounts')
       console.error(err)
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [activeAccountId, setActiveAccount])
 
   useEffect(() => {
     if (authLoading) {
@@ -71,12 +94,15 @@ export function AccountProvider({ children }: AccountProviderProps) {
 
   const value = {
     accounts,
+    activeAccountId,
+    activeAccount,
     isLoading,
     error,
     fetchAccounts,
     addAccount,
     updateAccount,
     removeAccount,
+    setActiveAccount,
   }
 
   return <AccountContext.Provider value={value}>{children}</AccountContext.Provider>

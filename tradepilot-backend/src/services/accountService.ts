@@ -9,6 +9,45 @@ export async function getAllAccounts(userId: string) {
   });
 }
 
+export async function getAccountsWithStats(userId: string) {
+  const accounts = await prisma.tradingAccount.findMany({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+  });
+
+  // Get trade counts and net P/L for each account
+  const accountIds = accounts.map((a) => a.id);
+  const trades = await prisma.trade.findMany({
+    where: { accountId: { in: accountIds } },
+    select: { accountId: true, rr: true, result: true },
+  });
+
+  const statsByAccountId = new Map<string, { tradeCount: number; netPL: number }>();
+  
+  for (const trade of trades) {
+    const stats = statsByAccountId.get(trade.accountId) ?? { tradeCount: 0, netPL: 0 };
+    stats.tradeCount += 1;
+    
+    // Calculate P/L: WIN adds RR, LOSS subtracts RR, BE adds 0
+    if (trade.result === "WIN" && trade.rr) {
+      stats.netPL += Number(trade.rr);
+    } else if (trade.result === "LOSS" && trade.rr) {
+      stats.netPL -= Number(trade.rr);
+    }
+    
+    statsByAccountId.set(trade.accountId, stats);
+  }
+
+  return accounts.map((account) => {
+    const stats = statsByAccountId.get(account.id) ?? { tradeCount: 0, netPL: 0 };
+    return {
+      ...account,
+      tradeCount: stats.tradeCount,
+      netPL: Number(stats.netPL.toFixed(2)),
+    };
+  });
+}
+
 export async function getAccountById(userId: string, id: string) {
   const account = await prisma.tradingAccount.findFirst({
     where: { id, userId },

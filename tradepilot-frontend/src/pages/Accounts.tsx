@@ -5,7 +5,7 @@ import AccountForm from '../components/AccountForm'
 import type { TradingAccount, AccountInput } from '../types/account'
 
 export default function Accounts() {
-  const { accounts, isLoading, error, fetchAccounts, addAccount, updateAccount, removeAccount } = useAccounts()
+  const { accounts, activeAccountId, isLoading, error, fetchAccounts, addAccount, updateAccount, removeAccount, setActiveAccount } = useAccounts()
   const [showForm, setShowForm] = useState(false)
   const [editingAccount, setEditingAccount] = useState<TradingAccount | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -46,6 +46,10 @@ export default function Accounts() {
   function handleEdit(account: TradingAccount) {
     setEditingAccount(account)
     setShowForm(true)
+  }
+
+  function handleSetActive(account: TradingAccount) {
+    setActiveAccount(account.id)
   }
 
   function handleCancel() {
@@ -136,8 +140,23 @@ export default function Accounts() {
       ) : (
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {accounts.map((account) => (
-            <div key={account.id} className="rounded-md border border-border-subtle bg-bg-surface p-4">
-              <h3 className="text-lg font-medium text-text-primary">{account.name}</h3>
+            <div
+              key={account.id}
+              className={`rounded-md border bg-bg-surface p-4 cursor-pointer transition hover:bg-bg-surface-hover ${
+                activeAccountId === account.id
+                  ? 'border-accent ring-1 ring-accent'
+                  : 'border-border-subtle'
+              }`}
+              onClick={() => handleSetActive(account)}
+            >
+              <div className="flex items-start justify-between">
+                <h3 className="text-lg font-medium text-text-primary">{account.name}</h3>
+                {activeAccountId === account.id && (
+                  <span className="inline-flex items-center rounded-full bg-accent/10 px-2 py-1 text-xs font-medium text-accent">
+                    Active
+                  </span>
+                )}
+              </div>
               <div className="mt-2 space-y-1 text-sm text-text-muted">
                 <p>
                   <span className="font-medium">Broker:</span> {account.broker || '—'}
@@ -146,10 +165,22 @@ export default function Accounts() {
                   <span className="font-medium">Type:</span> {account.accountType || '—'}
                 </p>
                 <p>
-                  <span className="font-medium">Balance:</span> {account.startingBalance} {account.currency}
+                  <span className="font-medium">Starting Balance:</span>{' '}
+                  {account.accountType?.toUpperCase() === 'CENT'
+                    ? `${Number(account.startingBalance).toLocaleString()} cents`
+                    : `$${Number(account.startingBalance).toLocaleString()} ${account.currency}`}
+                </p>
+                <p>
+                  <span className="font-medium">Trades:</span> {account.tradeCount ?? 0}
+                </p>
+                <p>
+                  <span className="font-medium">Net P/L:</span>{' '}
+                  <span className={account.netPL && account.netPL > 0 ? 'text-positive' : account.netPL && account.netPL < 0 ? 'text-negative' : ''}>
+                    {account.netPL ? (account.netPL > 0 ? '+' : '') + account.netPL.toFixed(2) + 'R' : '0R'}
+                  </span>
                 </p>
               </div>
-              <div className="mt-4 flex gap-2">
+              <div className="mt-4 flex gap-2" onClick={(e) => e.stopPropagation()}>
                 <button
                   onClick={() => handleEdit(account)}
                   className="rounded-md border border-border-subtle px-3 py-1.5 text-sm font-medium text-text-muted transition hover:bg-bg-surface-hover hover:text-text-primary"

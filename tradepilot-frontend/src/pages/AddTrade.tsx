@@ -8,7 +8,7 @@ import TradeForm from '../components/TradeForm'
 export default function AddTrade() {
   const navigate = useNavigate()
   const { addTrade } = useTrades()
-  const { accounts, isLoading: accountsLoading } = useAccounts()
+  const { activeAccount, isLoading: accountsLoading } = useAccounts()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
 
@@ -39,17 +39,14 @@ export default function AddTrade() {
     )
   }
 
-  if (accounts.length === 0) {
+  if (!activeAccount) {
     return (
       <div>
         <h1 className="text-2xl font-semibold text-text-primary">Add Trade</h1>
-        <p className="mt-2 text-slate-600">No accounts available. Please create an account first.</p>
+        <p className="mt-2 text-slate-600">No active account. Please create an account first.</p>
       </div>
     )
   }
-
-  const availableAccounts = accounts.map((a) => ({ id: a.id, name: a.name }))
-  const defaultAccountId = accounts[0].id
 
   return (
     <div>
@@ -61,11 +58,11 @@ export default function AddTrade() {
           </div>
         )}
         <TradeForm
-          initialValues={{ accountId: defaultAccountId }}
+          initialValues={{ accountId: activeAccount.id }}
           onSubmit={handleSubmit}
           submitLabel="Add Trade"
           isSubmitting={isSubmitting}
-          availableAccounts={availableAccounts}
+          accountId={activeAccount.id}
         />
       </div>
     </div>

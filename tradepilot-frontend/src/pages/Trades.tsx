@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTrades } from '../context/TradeContext'
+import { useAccounts } from '../context/AccountContext'
 import CalendarView from '../components/CalendarView'
 import TradeListView from '../components/TradeListView'
 import TradeDetailModal from '../components/TradeDetailModal'
+import { exportTradesToCSV } from '../utils/csvExport'
 import type { Trade } from '../types/trade'
 
 function formatMonth(date: Date): string {
@@ -12,6 +14,7 @@ function formatMonth(date: Date): string {
 
 export default function Trades() {
   const { trades, isLoading, error, fetchTrades, removeTrade } = useTrades()
+  const { activeAccountId, activeAccount } = useAccounts()
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list')
   const [selectedMonth, setSelectedMonth] = useState(() => {
     const stored = sessionStorage.getItem('calendar-month')
@@ -24,8 +27,8 @@ export default function Trades() {
   }, [selectedMonth])
 
   useEffect(() => {
-    fetchTrades()
-  }, [fetchTrades])
+    fetchTrades(activeAccountId ?? undefined)
+  }, [fetchTrades, activeAccountId])
 
   function handleDelete(id: string) {
     if (confirm('Are you sure you want to delete this trade?')) {
@@ -42,9 +45,16 @@ export default function Trades() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-text-primary">Trades</h1>
-          <p className="mt-2 text-sm text-text-muted">
-            {viewMode === 'list' ? 'View all trades in a list' : 'View trades grouped by day'}
-          </p>
+          <div className="mt-2 flex items-center gap-4">
+            <p className="text-sm text-text-muted">
+              {viewMode === 'list' ? 'View all trades in a list' : 'View trades grouped by day'}
+            </p>
+            {activeAccount && (
+              <div className="text-sm text-text-muted">
+                Active Account: <span className="font-medium text-text-primary">{activeAccount.name}</span>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="flex items-center gap-3">
@@ -71,6 +81,15 @@ export default function Trades() {
             </button>
           </div>
 
+          <button
+            onClick={() => exportTradesToCSV(trades)}
+            disabled={trades.length === 0}
+            className="rounded-md bg-bg-surface border border-border-subtle px-4 py-2 text-sm font-medium text-text-primary transition hover:bg-bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed"
+            title={trades.length === 0 ? 'No trades to export' : 'Export trades to CSV'}
+          >
+            Export CSV
+          </button>
+
           <Link
             to="/trades/new"
             className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-text-primary transition hover:bg-accent-hover"
@@ -85,7 +104,7 @@ export default function Trades() {
           trades={trades}
           isLoading={isLoading}
           error={error}
-          onRetry={fetchTrades}
+          onRetry={() => fetchTrades(activeAccountId ?? undefined)}
           onTradeClick={handleTradeClick}
           onDelete={handleDelete}
         />
@@ -94,6 +113,7 @@ export default function Trades() {
           selectedMonth={selectedMonth}
           onMonthChange={setSelectedMonth}
           onTradeClick={handleTradeClick}
+          accountId={activeAccountId ?? undefined}
         />
       )}
 

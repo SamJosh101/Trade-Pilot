@@ -9,7 +9,7 @@ type TradeFormProps = {
   onSubmit: (input: TradeInput) => Promise<void>
   submitLabel: string
   isSubmitting: boolean
-  availableAccounts: Array<{ id: string; name: string }>
+  accountId: string
 }
 
 const MAX_SCREENSHOT_BYTES = 5 * 1024 * 1024
@@ -20,9 +20,8 @@ export default function TradeForm({
   onSubmit,
   submitLabel,
   isSubmitting,
-  availableAccounts,
+  accountId,
 }: TradeFormProps) {
-  const [accountId, setAccountId] = useState(initialValues?.accountId ?? '')
   const [pair, setPair] = useState(initialValues?.pair ?? '')
   const [direction, setDirection] = useState<Direction>(initialValues?.direction ?? 'BUY')
   const [entry, setEntry] = useState(initialValues?.entry ?? '')
@@ -41,10 +40,6 @@ export default function TradeForm({
 
   function validate(): boolean {
     const newErrors: Record<string, string> = {}
-
-    if (!accountId) {
-      newErrors.accountId = 'Account is required'
-    }
 
     if (!pair.trim()) {
       newErrors.pair = 'Pair is required'
@@ -134,23 +129,6 @@ export default function TradeForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <FormField label="Account" error={errors.accountId}>
-        <select
-          className={inputClasses}
-          name="accountId"
-          onChange={(event) => setAccountId(event.target.value)}
-          required
-          value={accountId}
-        >
-          <option value="">Select an account</option>
-          {availableAccounts.map((account) => (
-            <option key={account.id} value={account.id}>
-              {account.name}
-            </option>
-          ))}
-        </select>
-      </FormField>
-
       <FormField label="Pair" error={errors.pair}>
         <input
           className={inputClasses}

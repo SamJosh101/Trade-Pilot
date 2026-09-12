@@ -8,6 +8,7 @@ type CalendarViewProps = {
   selectedMonth: string
   onMonthChange: (month: string) => void
   onTradeClick: (trade: Trade) => void
+  accountId?: string
 }
 
 function formatMonth(date: Date): string {
@@ -44,7 +45,7 @@ function rrColor(value: number): string {
   return 'text-text-muted'
 }
 
-export default function CalendarView({ selectedMonth, onMonthChange, onTradeClick }: CalendarViewProps) {
+export default function CalendarView({ selectedMonth, onMonthChange, onTradeClick, accountId }: CalendarViewProps) {
   const [calendar, setCalendar] = useState<CalendarResponse | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
@@ -60,7 +61,7 @@ export default function CalendarView({ selectedMonth, onMonthChange, onTradeClic
       setError('')
 
       try {
-        const data = await calendarService.getCalendar(selectedMonth)
+        const data = await calendarService.getCalendar(selectedMonth, accountId)
         if (isCurrent) {
           setCalendar(data)
         }
@@ -81,7 +82,7 @@ export default function CalendarView({ selectedMonth, onMonthChange, onTradeClic
     return () => {
       isCurrent = false
     }
-  }, [selectedMonth, refreshCount])
+  }, [selectedMonth, accountId, refreshCount])
 
   function handleRetry() {
     setRefreshCount((count) => count + 1)

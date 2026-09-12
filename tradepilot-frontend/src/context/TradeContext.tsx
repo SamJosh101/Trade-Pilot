@@ -6,7 +6,7 @@ type TradeContextValue = {
   trades: Trade[]
   isLoading: boolean
   error: string
-  fetchTrades: () => Promise<void>
+  fetchTrades: (accountId?: string) => Promise<void>
   addTrade: (input: TradeInput) => Promise<void>
   updateTrade: (id: string, input: Partial<TradeInput>) => Promise<void>
   removeTrade: (id: string) => Promise<void>
@@ -23,11 +23,11 @@ export function TradeProvider({ children }: TradeProviderProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const fetchTrades = useCallback(async () => {
+  const fetchTrades = useCallback(async (accountId?: string) => {
     setIsLoading(true)
     setError('')
     try {
-      const data = await tradeService.getAll()
+      const data = await tradeService.getAll(accountId)
       setTrades(data)
     } catch (err) {
       setError('Failed to load trades')

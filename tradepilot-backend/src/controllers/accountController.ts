@@ -3,7 +3,7 @@ import * as accountService from "../services/accountService";
 
 export async function getAll(req: Request, res: Response, next: NextFunction) {
   try {
-    const accounts = await accountService.getAllAccounts(req.user!.id);
+    const accounts = await accountService.getAccountsWithStats(req.user!.id);
     res.status(200).json(accounts);
   } catch (err) {
     next(err);

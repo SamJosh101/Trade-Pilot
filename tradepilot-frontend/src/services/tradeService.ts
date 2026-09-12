@@ -1,8 +1,9 @@
 import apiClient from '../api/apiClient'
 import type { Trade, TradeInput } from '../types/trade'
 
-export async function getAll(): Promise<Trade[]> {
-  const response = await apiClient.get<Trade[]>('/trades')
+export async function getAll(accountId?: string): Promise<Trade[]> {
+  const params = accountId ? { accountId } : {}
+  const response = await apiClient.get<Trade[]>('/trades', { params })
   return response.data
 }
 

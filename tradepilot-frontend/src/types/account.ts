@@ -6,6 +6,8 @@ export type TradingAccount = {
   startingBalance: string;
   currency: string;
   createdAt: string;
+  tradeCount?: number;
+  netPL?: number;
 };
 
 export type AccountInput = {

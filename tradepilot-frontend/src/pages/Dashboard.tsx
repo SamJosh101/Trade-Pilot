@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
+import { useAccounts } from '../context/AccountContext'
 import * as dashboardService from '../services/dashboardService'
 import type { Metrics } from '../types/dashboard'
 import MetricCard from '../components/MetricCard'
 
 export default function Dashboard() {
   const { user } = useAuth()
+  const { activeAccountId, activeAccount } = useAccounts()
   const [metrics, setMetrics] = useState<Metrics | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
@@ -15,7 +17,7 @@ export default function Dashboard() {
   useEffect(() => {
     async function fetchMetrics() {
       try {
-        const data = await dashboardService.getMetrics()
+        const data = await dashboardService.getMetrics(activeAccountId ?? undefined)
         setMetrics(data)
         setError('')
       } catch (err) {
@@ -27,13 +29,13 @@ export default function Dashboard() {
     }
 
     fetchMetrics()
-  }, [])
+  }, [activeAccountId])
 
   function handleRetry() {
     setIsLoading(true)
     setError('')
     dashboardService
-      .getMetrics()
+      .getMetrics(activeAccountId ?? undefined)
       .then((data) => {
         setMetrics(data)
         setError('')
@@ -75,7 +77,14 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-text-primary">Welcome, {user?.name}</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold text-text-primary">Welcome, {user?.name}</h1>
+        {activeAccount && (
+          <div className="text-sm text-text-muted">
+            Active Account: <span className="font-medium text-text-primary">{activeAccount.name}</span>
+          </div>
+        )}
+      </div>
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <MetricCard label="Total Trades" value={metrics?.totalTrades ?? 0} tone="neutral" />
         <MetricCard
