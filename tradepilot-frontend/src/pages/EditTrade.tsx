@@ -2,20 +2,19 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTrades } from '../context/TradeContext'
-import { useAccounts } from '../context/AccountContext'
 import TradeForm from '../components/TradeForm'
 import * as tradeService from '../services/tradeService'
+import type { TradeInput } from '../types/trade'
 
 export default function EditTrade() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { updateTrade } = useTrades()
-  const { accounts, isLoading: accountsLoading } = useAccounts()
   const [isLoading, setIsLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
-  const [initialValues, setInitialValues] = useState<Partial<Parameters<typeof updateTrade>[1]> | undefined>()
+  const [initialValues, setInitialValues] = useState<TradeInput | undefined>()
 
   useEffect(() => {
     async function fetchTrade() {
@@ -53,7 +52,7 @@ export default function EditTrade() {
     fetchTrade()
   }, [id])
 
-  async function handleSubmit(input: Parameters<typeof updateTrade>[1]) {
+  async function handleSubmit(input: TradeInput) {
     if (!id) return
 
     setIsSubmitting(true)
@@ -91,15 +90,6 @@ export default function EditTrade() {
     )
   }
 
-  if (accountsLoading) {
-    return (
-      <div>
-        <h1 className="text-2xl font-semibold text-text-primary">Edit Trade</h1>
-        <p className="mt-2 text-slate-600">Loading accounts...</p>
-      </div>
-    )
-  }
-
   return (
     <div>
       <h1 className="text-2xl font-semibold text-text-primary">Edit Trade</h1>
@@ -115,7 +105,7 @@ export default function EditTrade() {
             onSubmit={handleSubmit}
             submitLabel="Save Changes"
             isSubmitting={isSubmitting}
-            availableAccounts={accounts.map((a) => ({ id: a.id, name: a.name }))}
+            accountId={initialValues.accountId}
           />
         )}
       </div>
