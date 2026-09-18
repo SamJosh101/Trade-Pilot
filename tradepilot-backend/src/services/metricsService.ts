@@ -1,9 +1,9 @@
 import prisma from "../config/prisma";
 
 /**
- * All aggregation happens in Prisma's aggregate/groupBy, which compile down
- * to single SQL queries executed by Postgres — not by pulling every trade
- * row into Node and looping. Keeps this both fast and type-safe.
+ * RR sign convention: WIN adds RR, LOSS subtracts RR, BE adds 0.
+ * This requires pulling trade data and calculating in JS since SQL aggregation
+ * doesn't support conditional sign application based on result.
  */
 export async function getMetrics(userId: string, accountId?: string) {
   const where: any = { userId };
@@ -11,30 +11,57 @@ export async function getMetrics(userId: string, accountId?: string) {
     where.accountId = accountId;
   }
 
-  const [totals, byPair, winCount] = await Promise.all([
-    prisma.trade.aggregate({
-      where,
-      _count: { _all: true },
-      _avg: { rr: true },
-    }),
-    prisma.trade.groupBy({
-      by: ["pair"],
-      where,
-      _avg: { rr: true },
-      orderBy: { _avg: { rr: "desc" } },
-    }),
-    prisma.trade.count({ where: { ...where, result: "WIN" } }),
-  ]);
+  const trades = await prisma.trade.findMany({
+    where,
+    select: {
+      pair: true,
+      result: true,
+      rr: true,
+    },
+  });
 
-  const totalTrades = totals._count._all;
+  let totalRR = 0;
+  const pairStats = new Map<string, { total: number; rrSum: number }>();
+  let winCount = 0;
+
+  for (const trade of trades) {
+    const signedRR = trade.rr ? Number(trade.rr) : 0;
+    
+    if (trade.result === "WIN") {
+      totalRR += signedRR;
+      winCount += 1;
+    } else if (trade.result === "LOSS") {
+      totalRR -= signedRR;
+    }
+    // BE and null result add 0
+
+    const stats = pairStats.get(trade.pair) ?? { total: 0, rrSum: 0 };
+    stats.total += 1;
+    if (trade.result === "WIN") {
+      stats.rrSum += signedRR;
+    } else if (trade.result === "LOSS") {
+      stats.rrSum -= signedRR;
+    }
+    // BE and null result add 0
+    pairStats.set(trade.pair, stats);
+  }
+
+  const totalTrades = trades.length;
   const winRate = totalTrades ? Number(((winCount / totalTrades) * 100).toFixed(2)) : 0;
-  const avgRR = totals._avg.rr ? Number(totals._avg.rr) : 0;
+  const avgRR = totalTrades ? Number((totalRR / totalTrades).toFixed(2)) : 0;
+
+  const pairBreakdown = Array.from(pairStats.entries())
+    .map(([pair, s]) => ({
+      pair,
+      avgRR: s.total ? Number((s.rrSum / s.total).toFixed(2)) : 0,
+    }))
+    .sort((a, b) => b.avgRR - a.avgRR);
 
   return {
     totalTrades,
     winRate,
     avgRR,
-    bestPair: byPair.length ? byPair[0].pair : null,
-    worstPair: byPair.length ? byPair[byPair.length - 1].pair : null,
+    bestPair: pairBreakdown.length ? pairBreakdown[0].pair : null,
+    worstPair: pairBreakdown.length ? pairBreakdown[pairBreakdown.length - 1].pair : null,
   };
 }

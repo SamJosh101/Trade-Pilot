@@ -29,7 +29,13 @@ export async function getAnalytics(userId: string, accountId?: string) {
 
   let cumulativeRR = 0;
   const equityCurve = trades.map((t) => {
-    cumulativeRR += t.rr ? Number(t.rr) : 0;
+    const signedRR = t.rr ? Number(t.rr) : 0;
+    if (t.result === "WIN") {
+      cumulativeRR += signedRR;
+    } else if (t.result === "LOSS") {
+      cumulativeRR -= signedRR;
+    }
+    // BE and null result add 0
     return {
       date: t.createdAt,
       cumulativeRR: Number(cumulativeRR.toFixed(2)),
@@ -40,8 +46,13 @@ export async function getAnalytics(userId: string, accountId?: string) {
   for (const t of trades) {
     const stats = pairStats.get(t.pair) ?? { total: 0, wins: 0, rrSum: 0 };
     stats.total += 1;
-    if (t.result === "WIN") stats.wins += 1;
-    stats.rrSum += t.rr ? Number(t.rr) : 0;
+    if (t.result === "WIN") {
+      stats.wins += 1;
+      stats.rrSum += t.rr ? Number(t.rr) : 0;
+    } else if (t.result === "LOSS") {
+      stats.rrSum -= t.rr ? Number(t.rr) : 0;
+    }
+    // BE and null result add 0
     pairStats.set(t.pair, stats);
   }
   const pairBreakdown = Array.from(pairStats.entries())
@@ -128,7 +139,13 @@ export async function getCalendar(userId: string, month: string, accountId?: str
       trades: [],
     };
 
-    day.netRR += trade.rr ? Number(trade.rr) : 0;
+    const signedRR = trade.rr ? Number(trade.rr) : 0;
+    if (trade.result === "WIN") {
+      day.netRR += signedRR;
+    } else if (trade.result === "LOSS") {
+      day.netRR -= signedRR;
+    }
+    // BE and null result add 0
     day.tradeCount += 1;
     day.trades.push({
       id: trade.id,

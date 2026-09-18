@@ -16,9 +16,10 @@ const TradeContext = createContext<TradeContextValue | undefined>(undefined)
 
 type TradeProviderProps = {
   children: ReactNode
+  onTradeChange?: () => Promise<void>
 }
 
-export function TradeProvider({ children }: TradeProviderProps) {
+export function TradeProvider({ children, onTradeChange }: TradeProviderProps) {
   const [trades, setTrades] = useState<Trade[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -40,17 +41,20 @@ export function TradeProvider({ children }: TradeProviderProps) {
   const addTrade = useCallback(async (input: TradeInput) => {
     await tradeService.create(input)
     await fetchTrades()
-  }, [fetchTrades])
+    await onTradeChange?.()
+  }, [fetchTrades, onTradeChange])
 
   const updateTrade = useCallback(async (id: string, input: Partial<TradeInput>) => {
     await tradeService.update(id, input)
     await fetchTrades()
-  }, [fetchTrades])
+    await onTradeChange?.()
+  }, [fetchTrades, onTradeChange])
 
   const removeTrade = useCallback(async (id: string) => {
     await tradeService.remove(id)
     await fetchTrades()
-  }, [fetchTrades])
+    await onTradeChange?.()
+  }, [fetchTrades, onTradeChange])
 
   const value = {
     trades,
