@@ -1,0 +1,12 @@
+import api from '../api/apiClient';
+import {message} from './tradeQueryService';
+import type {Trade} from '../types/trade';
+import type {Performance} from '../types/financial';
+export {message};
+export type Query={accountId:string;mode:string;timezone:string;sort:string;direction:string;strategyId?:string;from?:string;through?:string;limit?:number;cursor?:string;groupKey?:string;expectedReportId?:string};
+export type Row={key:string;strategyId:string|null;kind:string;unit:string|null;label:string;archived:boolean;tradeCount:number;assignedTradeCount:number;completedTradeCount:number;eligibleCompletedCount:number;knownNetCount:number;knownRCount:number;winCount:number;lossCount:number;breakEvenCount:number;winRate:string|null;totalNet:string|null;totalR:string|null;meanR:string|null;averageWinningR:string|null;averageLosingR:string|null;profitFactor:string|null;profitFactorReason:string|null;partialCount:number;partialKnownNetCount:number;partialNetToDate:string|null;unknownClosingDateCount:number;undatedCompletedCount:number;missingNetCount:number;missingRiskCount:number;missingRCount:number;incompleteCount:number;notRecordedCount:number;invalidRecordedCount:number;combinesVersions:boolean;versions:{name:string;revision:number;tradeCount:number}[];reasons:Record<string,number>};
+export type Report<T=Row>={protocol:string;reportId:string;generatedAt:string;calculationVersion:string;policyVersion:string;complete:boolean;items:T[];groupCount:number;nextCursor:string|null;detailCount?:number;account:{id:string;name:string};mode:string;timezone:string;coverage:{accountTradeCount:number;scopeCount:number;outsidePeriodCount:number;excludedStrategyCount:number;unknownAttributionCount:number;unassignedCount:number;unknownDateScope:string};period:{from:string|null;through:string|null;utcFrom:string|null;utcTo:string|null}};
+export type Detail=Trade&{attribution:{kind:string;strategyId:string|null;name:string|null;revision:number|null};financial:Pick<Performance,'tradeId'|'revision'|'derived'>&{initialRiskAmount:string|null;quantityUnit:string|null}};
+export const capabilities=(signal?:AbortSignal)=>api.get<{available:boolean}>('/strategy-performance/capabilities',{signal}).then(r=>r.data);
+export const get=<T=Row>(q:Query,signal?:AbortSignal)=>api.get<Report<T>>('/strategy-performance',{params:q,signal,timeout:65000}).then(r=>r.data);
+export const csv=(q:Query,signal?:AbortSignal)=>api.get<Blob>('/strategy-performance/export',{params:q,responseType:'blob',signal,timeout:65000}).then(r=>r.data);

@@ -1,0 +1,26 @@
+# Reviewed production package. Do not import/apply without cutover approval.
+services:
+  - type: web
+    name: Trade-Pilot
+    runtime: node
+    plan: free
+    rootDir: tradepilot-backend
+    autoDeployTrigger: 'off'
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TRADEPILOT_STAGING
+        value: 'false'
+      - key: TRADEPILOT_AUTH_SECURITY_REQUIRED
+        value: 'true'
+      - key: TRADEPILOT_FINANCIAL_WRITES
+        value: 'false'
+      - key: CORS_ORIGIN
+        value: https://trade-pilot-gules.vercel.app
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false

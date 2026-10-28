@@ -1,0 +1,14 @@
+import {Router} from 'express';
+import rateLimit from 'express-rate-limit';
+import {authMiddleware} from '../middleware/authMiddleware';
+import {available} from '../strategies/service';
+import {FinancialError} from '../financial/errors';
+import {querySchema} from './schemas';
+import {list,exportCsv} from './service';
+const activeExports=new Set<string>();
+const router=Router();router.use(authMiddleware,(_q,r,next)=>{r.setHeader('Cache-Control','no-store');next();},rateLimit({windowMs:60000,limit:120,keyGenerator:r=>r.user!.id,standardHeaders:'draft-7',legacyHeaders:false}));
+router.get('/capabilities',async(_q,r,next)=>{try{r.json({protocol:'trade-query-v1',available:await available(),maxPage:100,maxExportRows:10000,maxExportBytes:16777216});}catch(e){next(e);}});
+router.use(async(_q,_r,next)=>{try{if(!await available())throw new FinancialError('QUERY_UNAVAILABLE','Advanced queries require a separately approved compatible database upgrade',503);next();}catch(e){next(e);}});
+router.get('/',async(q,r,next)=>{try{const parsed=querySchema.safeParse(q.query);if(!parsed.success)throw new FinancialError('INVALID_QUERY',parsed.error.issues[0].message,400);r.json(await list(q.user!.id,parsed.data));}catch(e){next(e);}});
+router.get('/export',rateLimit({windowMs:60000,limit:4,keyGenerator:r=>r.user!.id,standardHeaders:'draft-7',legacyHeaders:false}),async(q,r,next)=>{try{const {scope,...filters}=q.query;if(scope!=='ACCOUNT'&&scope!=='MATCHING')throw new FinancialError('INVALID_SCOPE','Choose ACCOUNT or MATCHING export scope',400);const parsed=querySchema.safeParse(filters);if(!parsed.success)throw new FinancialError('INVALID_QUERY',parsed.error.issues[0].message,400);if(parsed.data.cursor)throw new FinancialError('INVALID_EXPORT','Export does not accept a page cursor',400);if(activeExports.has(q.user!.id))throw new FinancialError('EXPORT_BUSY','An export is already running. Wait before retrying.',429);activeExports.add(q.user!.id);let csv:string;try{csv=await exportCsv(q.user!.id,parsed.data,scope);}finally{activeExports.delete(q.user!.id);}r.type('text/csv').setHeader('Content-Disposition','attachment; filename="tradepilot-trades.csv"');r.send(csv);}catch(e){next(e);}});
+export default router;

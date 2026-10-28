@@ -1,0 +1,4 @@
+import {z} from 'zod';
+import {querySchema} from '../tradeQuery/schemas';
+export const reportQuery=z.object({accountId:querySchema.shape.accountId,strategyId:z.union([z.string().uuid(),z.literal('unassigned'),z.literal('indeterminate')]).optional(),mode:z.enum(['CURRENT','AT_CLOSE']).default('CURRENT'),timezone:querySchema.shape.timezone,from:querySchema.shape.from,through:querySchema.shape.through,sort:z.enum(['name','trades','completed','winRate','totalR','meanR','net','profitFactor']).default('name'),direction:z.enum(['asc','desc']).default('asc'),limit:z.coerce.number().int().min(1).max(50).default(20),cursor:z.string().max(4096).optional(),expectedReportId:z.string().regex(/^[a-f0-9]{64}$/).optional(),groupKey:z.string().regex(/^[a-f0-9]{64}$/).optional()}).strict().superRefine((q,c)=>{if(q.from&&q.through&&q.from>q.through)c.addIssue({code:'custom',message:'Start date must not follow end date'});});
+export type ReportQuery=z.infer<typeof reportQuery>;

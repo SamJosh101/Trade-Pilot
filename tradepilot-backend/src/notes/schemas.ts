@@ -1,0 +1,13 @@
+import {z} from 'zod';
+export const dayDate=z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(s=>{const d=new Date(`${s}T00:00:00Z`);return Number.isFinite(d.getTime())&&d.toISOString().slice(0,10)===s;},'Invalid UTC day');
+const association=z.string().uuid().nullable();
+const noNul=(value:string)=>!value.includes('\0');
+export const noteInput=z.object({title:z.string().trim().min(1).max(160).refine(noNul,'Unsupported null character'),body:z.string().max(30000).refine(noNul,'Unsupported null character'),folderId:association.optional(),accountId:association.optional(),tradeId:association.optional(),dayDate:dayDate.nullable().optional()}).strict();
+export const notePatch=noteInput.partial().refine(v=>Object.keys(v).length>0,'No changes supplied');
+export const folderInput=z.object({name:z.string().trim().min(1).max(120).refine(noNul,'Unsupported null character')}).strict();
+export const noteQuery=z.object({q:z.string().trim().max(200).refine(noNul,'Unsupported null character').optional(),accountId:z.string().uuid().optional(),tradeId:z.string().uuid().optional(),folderId:z.union([z.string().uuid(),z.literal('unfiled')]).optional(),dayDate:dayDate.optional(),sort:z.enum(['updated_desc','updated_asc','created_desc','title_asc']).default('updated_desc'),cursor:z.string().max(2048).optional(),limit:z.coerce.number().int().min(1).max(50).default(20)}).strict();
+export const folderQuery=z.object({cursor:z.string().max(2048).optional(),limit:z.coerce.number().int().min(1).max(100).default(50)}).strict();
+export const importInput=noteInput.extend({accountId:z.string().uuid(),dayDate:dayDate,key:z.string().min(8).max(128).regex(/^[A-Za-z0-9:_-]+$/)}).strict();
+export type NoteInput=z.infer<typeof noteInput>;
+export type NotePatch=z.infer<typeof notePatch>;
+export type NoteQuery=z.infer<typeof noteQuery>;

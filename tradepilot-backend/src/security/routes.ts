@@ -1,0 +1,17 @@
+import {Router} from 'express';
+import rateLimit from 'express-rate-limit';
+import {z} from 'zod';
+import {authMiddleware} from '../middleware/authMiddleware';
+import {AppError} from '../utils/AppError';
+import * as security from './service';
+const router=Router();
+router.use(authMiddleware,(_q,r,n)=>{r.setHeader('Cache-Control','no-store');n();},rateLimit({windowMs:60000,limit:20,keyGenerator:q=>q.user!.id,standardHeaders:'draft-7',legacyHeaders:false}));
+const endpoint=(fn:(q:any)=>Promise<unknown>)=>(q:any,r:any,n:any)=>{Promise.resolve().then(()=>fn(q)).then(v=>r.json(v)).catch(n);};
+const parse=<T>(schema:z.ZodType<T>,v:unknown):T=>{const r=schema.safeParse(v);if(!r.success)throw new AppError(r.error.issues[0].message,400);return r.data;};
+router.get('/capabilities',endpoint(async()=>({protocol:'security-v1',sessions:await security.available(),passwordRecovery:false,uploads:false,transition:'Existing bearer tokens remain valid until expiry or explicit revocation. New upgraded logins use tracked12-hour bearer sessions.'})));
+router.get('/sessions',endpoint(q=>security.list(q.user.id,q.user.sessionId)));
+router.post('/password',endpoint(q=>security.changePassword(q.user.id,parse(security.passwordChange,q.body))));
+router.post('/logout',endpoint(async q=>{parse(z.object({}).strict(),q.body);await security.logout(q.user.id,q.user.sessionId);return {revoked:true};}));
+router.post('/logout-all',endpoint(q=>{const b=parse(security.confirmation,q.body);return security.logoutAll(q.user.id,b.currentPassword);}));
+router.post('/sessions/:id/revoke',endpoint(q=>{if(!/^(?:[a-f0-9-]{36}|[a-f0-9]{64})$/.test(q.params.id))throw new AppError('Session not found',404);const b=parse(security.confirmation,q.body);return security.revoke(q.user.id,q.params.id,b.currentPassword);}));
+export default router;

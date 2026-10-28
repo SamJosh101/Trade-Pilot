@@ -1,0 +1,12 @@
+import {Router} from 'express';
+import rateLimit from 'express-rate-limit';
+import {authMiddleware} from '../middleware/authMiddleware';
+import {available} from '../strategies/service';
+import {FinancialError} from '../financial/errors';
+import {reportQuery} from './schemas';
+import {report} from './service';
+const router=Router(),active=new Set<string>();
+router.use(authMiddleware,(_q,r,n)=>{r.setHeader('Cache-Control','no-store');n();},rateLimit({windowMs:60000,limit:60,keyGenerator:q=>q.user!.id,standardHeaders:'draft-7',legacyHeaders:false}));
+router.get('/capabilities',async(_q,r,n)=>{try{r.json({protocol:'strategy-report-v1',available:await available(),maxAccountTrades:10000});}catch(e){n(e);}});
+router.get(['/', '/export'],async(q,r,n)=>{const uid=q.user!.id;let locked=false;try{const parsed=reportQuery.safeParse(q.query);if(!parsed.success)throw new FinancialError('INVALID_REPORT',parsed.error.issues[0].message,400);if(!await available())throw new FinancialError('REPORT_UNAVAILABLE','Strategy reports require a separately approved compatible database upgrade',503);if(active.has(uid)||active.size>=2)throw new FinancialError('REPORT_BUSY','A report is already running. Wait and retry.',429);active.add(uid);locked=true;const result=await report(uid,parsed.data,q.path==='/export');if('csv' in result)r.type('text/csv').setHeader('Content-Disposition','attachment; filename="tradepilot-strategy-performance.csv"').send(result.csv);else r.json(result);}catch(e){if((e as {code?:string}).code==='P2028')n(new FinancialError('REPORT_TIMEOUT','Report timed out; no partial result was returned.',503));else n(e);}finally{if(locked)active.delete(uid);}});
+export default router;

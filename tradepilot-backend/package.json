@@ -1,0 +1,64 @@
+{
+  "name": "tradepilot-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run build && node --test tests/*.test.cjs",
+    "test:v11": "npm run build && node --test tests/v11/*.test.cjs",
+    "test:v11:postgres": "npm run build && node scripts/verify-financial-postgres.cjs --baseline",
+    "postinstall": "prisma generate --config prisma/schema-only.config.ts",
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "test:financial": "npm run build && node --test tests/financial/*.test.cjs",
+    "test:financial:postgres": "npm run build && node scripts/verify-financial-postgres.cjs",
+    "test:frontend:postgres": "npm run build && node scripts/verify-financial-postgres.cjs --frontend",
+    "test:legacy:postgres": "npm run build && node scripts/verify-financial-postgres.cjs --legacy",
+    "test:strategies:postgres": "npm run build && node scripts/verify-financial-postgres.cjs --strategies",
+    "test:integrity:postgres": "npm run build && node scripts/verify-financial-postgres.cjs --integrity",
+    "test:gameplans:postgres": "npm run build && node scripts/verify-financial-postgres.cjs --gameplans",
+    "test:notes:postgres": "npm run build && node scripts/verify-financial-postgres.cjs --notes",
+    "test:trade-query:postgres": "npm run build && node scripts/verify-financial-postgres.cjs --trade-query",
+    "test:strategy-performance:postgres": "npm run build && node scripts/verify-financial-postgres.cjs --strategy-performance",
+    "test:security:postgres": "npm run build && node scripts/verify-financial-postgres.cjs --security"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": "^20.19 || ^22.12 || >=24.0"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.10.1",
+    "@prisma/client": "^7.10.1",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.6.0",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.11.0",
+    "pg": "^8.22.0",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^26.1.1",
+    "@types/pg": "^8.20.0",
+    "prisma": "^7.8.0",
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2"
+  },
+  "overrides": {
+    "body-parser": "2.4.0"
+  }
+}

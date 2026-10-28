@@ -1,0 +1,352 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String           @id @default(uuid())
+  name      String
+  email     String           @unique
+  password  String // bcrypt hash, never plaintext
+  createdAt DateTime         @default(now())
+  trades    Trade[]
+  accounts  TradingAccount[]
+  journalNotes Note[]
+  noteFolders NoteFolder[]
+  noteImports NoteImportReceipt[]
+  strategies Strategy[]
+  strategyAssignments TradeStrategyAssignment[]
+  gameplans Gameplan[]
+  checklistSnapshots TradeGameplanSnapshot[]
+  authSecurity AuthSecurityState?
+  authSessions AuthSession[]
+  passwordResets PasswordResetToken[]
+
+  @@index([email])
+}
+
+enum Direction {
+  BUY
+  SELL
+}
+
+enum Result {
+  WIN
+  LOSS
+  BE
+}
+
+model TradingAccount {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+  name            String
+  broker          String?
+  accountType     String?  // e.g. "DEMO", "LIVE", "CHALLENGE" — plain string, not enum, for flexibility
+  startingBalance Decimal  @db.Decimal(12, 2)
+  currency        String   @default("USD")
+  isCurrent       Boolean  @default(false)
+  avatarUrl       String?
+  brokerId        String?
+  brokerName      String?
+  brokerLogo      String?
+  createdAt       DateTime @default(now())
+  trades          Trade[]
+  performances    TradePerformance[]
+  checklistSnapshots TradeGameplanSnapshot[]
+  strategyAssignments TradeStrategyAssignment[]
+  journalNotes Note[]
+  settlementUnitKey String? @db.VarChar(160)
+  unitsPerMajor Decimal? @db.Decimal(20,8)
+  denominationLabel String? @db.VarChar(32)
+  denominationEvidence Json?
+
+  @@unique([id,userId])
+  @@unique([id,settlementUnitKey])
+
+  @@index([userId])
+  @@index([userId, isCurrent])
+}
+
+model Trade {
+  id        String            @id @default(uuid())
+  userId    String
+  user      User              @relation(fields: [userId], references: [id], onDelete: Restrict)
+  accountId String
+  account   TradingAccount    @relation(fields: [accountId,userId], references: [id,userId], onDelete: Restrict, onUpdate: Restrict)
+  pair      String
+  direction Direction
+  entry     Decimal   @db.Decimal(38, 18)
+  sl        Decimal   @db.Decimal(38, 18)
+  tp        Decimal   @db.Decimal(38, 18)
+  rr        Decimal?  @db.Decimal(5, 2)
+  revision Int @default(0)
+  performance TradePerformance?
+  checklist TradeGameplanSnapshot?
+  strategyAssignments TradeStrategyAssignment[]
+  @@unique([id,accountId,userId])
+  journalNotes Note[]
+
+  @@unique([id,accountId])
+
+  timeframe String?
+  result    Result?
+  notes     String?
+  imageUrl  String?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([userId, pair])
+  @@index([userId,accountId,createdAt,id])
+  @@index([userId,accountId,pair,id])
+}
+
+model NoteFolder {
+  id String @id @default(uuid())
+  userId String
+  user User @relation(fields:[userId],references:[id],onDelete:Restrict,onUpdate:Restrict)
+  name String @db.VarChar(120)
+  revision Int @default(0)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  notes Note[]
+  @@unique([id,userId])
+  @@unique([userId,name])
+  @@index([userId,name,id])
+}
+
+model Note {
+  id String @id @default(uuid())
+  userId String
+  user User @relation(fields:[userId],references:[id],onDelete:Restrict,onUpdate:Restrict)
+  folderId String?
+  folder NoteFolder? @relation(fields:[folderId,userId],references:[id,userId],onDelete:Restrict,onUpdate:Restrict)
+  accountId String?
+  account TradingAccount? @relation(fields:[accountId,userId],references:[id,userId],onDelete:Restrict,onUpdate:Restrict)
+  tradeId String?
+  trade Trade? @relation(fields:[tradeId,accountId],references:[id,accountId],onDelete:Restrict,onUpdate:Restrict)
+  dayDate String? @db.VarChar(10)
+  title String @db.VarChar(160)
+  body String @db.Text
+  revision Int @default(0)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  @@index([userId,updatedAt,id])
+  @@index([userId,folderId,updatedAt,id])
+  @@index([userId,accountId,dayDate])
+  @@index([tradeId,accountId])
+}
+
+// Durable idempotency ledger. referenceNoteId is deliberately retained after a
+// note is deleted: a retry returns410 instead of recreating deleted content.
+model NoteImportReceipt {
+  id String @id @default(uuid())
+  userId String
+  user User @relation(fields:[userId],references:[id],onDelete:Restrict,onUpdate:Restrict)
+  key String @db.VarChar(128)
+  fingerprint String @db.VarChar(64)
+  referenceNoteId String
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  @@unique([userId,key])
+}
+
+enum PerformanceStatus {
+ OPEN
+ PARTIAL
+ CLOSED
+}
+enum PerformanceSource {
+ MANUAL
+ EXECUTIONS
+ IMPORT
+}
+enum ExecutionKind {
+ ENTRY
+ EXIT
+}
+enum ChargeKind {
+ COMMISSION
+ SWAP
+ OTHER
+}
+model TradePerformance {
+ tradeId String @id
+ accountId String
+ trade Trade @relation(fields:[tradeId,accountId], references:[id,accountId], onDelete:Restrict, onUpdate:Restrict)
+ account TradingAccount? @relation(fields:[accountId,moneyUnitKey], references:[id,settlementUnitKey], onDelete:Restrict, onUpdate:Restrict)
+ status PerformanceStatus?
+ source PerformanceSource?
+ moneyUnitKey String? @db.VarChar(160)
+ initialRiskAmount Decimal? @db.Decimal(38,12)
+ reportedGrossPnl Decimal? @db.Decimal(38,12)
+ reportedNetPnl Decimal? @db.Decimal(38,12)
+ costsComplete Boolean?
+ openedAt DateTime? @db.Timestamptz(3)
+ closedAt DateTime? @db.Timestamptz(3)
+ instrumentSpec Json?
+ provenance Json?
+ calculationVersion String? @db.VarChar(32)
+ updatedAt DateTime @updatedAt
+ executions TradeExecution[]
+ charges TradeCharge[]
+ @@unique([tradeId,accountId])
+ @@index([accountId,closedAt])
+}
+model TradeExecution {
+ id String @id @default(uuid())
+ tradeId String
+ accountId String
+ performance TradePerformance @relation(fields:[tradeId,accountId],references:[tradeId,accountId],onDelete:Restrict,onUpdate:Restrict)
+ kind ExecutionKind
+ price Decimal? @db.Decimal(38,18)
+ quantity Decimal? @db.Decimal(38,18)
+ executedAt DateTime? @db.Timestamptz(3)
+ sequence Int?
+ fxRateToAccount Decimal? @db.Decimal(38,18)
+ fxEvidence Json?
+ provider String? @db.VarChar(80)
+ externalDealId String? @db.VarChar(160)
+ externalOrderId String? @db.VarChar(160)
+ externalPositionId String? @db.VarChar(160)
+ charges TradeCharge[]
+ @@unique([id,tradeId,accountId])
+ @@unique([accountId,provider,externalDealId])
+ @@index([tradeId,executedAt,sequence])
+}
+model TradeCharge {
+ id String @id @default(uuid())
+ tradeId String
+ accountId String
+ performance TradePerformance @relation(fields:[tradeId,accountId],references:[tradeId,accountId],onDelete:Restrict,onUpdate:Restrict)
+ executionId String?
+ execution TradeExecution? @relation(fields:[executionId,tradeId,accountId],references:[id,tradeId,accountId],onDelete:Restrict,onUpdate:Restrict)
+ kind ChargeKind
+ amount Decimal? @db.Decimal(38,12)
+ unitKey String? @db.VarChar(160)
+ occurredAt DateTime? @db.Timestamptz(3)
+ fxRateToAccount Decimal? @db.Decimal(38,18)
+ fxEvidence Json?
+ provider String? @db.VarChar(80)
+ externalComponentId String? @db.VarChar(160)
+ @@unique([accountId,provider,externalComponentId])
+ @@index([tradeId,occurredAt])
+}
+
+model Gameplan {
+ id String @id @default(uuid())
+ userId String
+ user User @relation(fields:[userId],references:[id],onDelete:Restrict,onUpdate:Restrict)
+ name String @db.VarChar(160)
+ description String @db.VarChar(5000)
+ revision Int @default(0)
+ archivedAt DateTime? @db.Timestamptz(3)
+ createdAt DateTime @default(now()) @db.Timestamptz(3)
+ updatedAt DateTime @updatedAt @db.Timestamptz(3)
+ requestKey String? @db.VarChar(36)
+ creationHash String? @db.VarChar(64)
+ items GameplanItem[]
+ snapshots TradeGameplanSnapshot[]
+ @@unique([id,userId])
+ @@unique([userId,requestKey])
+ @@index([userId,archivedAt,updatedAt,id])
+}
+model GameplanItem {
+ id String @id @default(uuid())
+ gameplanId String
+ userId String
+ gameplan Gameplan @relation(fields:[gameplanId,userId],references:[id,userId],onDelete:Restrict,onUpdate:Restrict)
+ label String @db.VarChar(500)
+ position Int
+ required Boolean @default(false)
+ @@unique([gameplanId,position])
+}
+model TradeGameplanSnapshot {
+ id String @id @default(uuid())
+ tradeId String @unique
+ accountId String
+ userId String
+ trade Trade @relation(fields:[tradeId,accountId,userId],references:[id,accountId,userId],onDelete:Restrict,onUpdate:Restrict,map:"Snapshot_trade_owner_fkey")
+ user User @relation(fields:[userId],references:[id],onDelete:Restrict,onUpdate:Restrict,map:"Snapshot_user_fkey")
+ account TradingAccount @relation(fields:[accountId,userId],references:[id,userId],onDelete:Restrict,onUpdate:Restrict,map:"Snapshot_account_owner_fkey")
+ templateId String
+ template Gameplan @relation(fields:[templateId,userId],references:[id,userId],onDelete:Restrict,onUpdate:Restrict,map:"Snapshot_template_owner_fkey")
+ templateRevision Int
+ templateName String @db.VarChar(160)
+ templateDescription String @db.VarChar(5000)
+ itemsJson Json
+ answersJson Json
+ revision Int @default(0)
+ createdAt DateTime @default(now()) @db.Timestamptz(3)
+ updatedAt DateTime @updatedAt @db.Timestamptz(3)
+ @@index([userId,accountId,tradeId])
+ @@unique([tradeId,accountId,userId])
+ @@index([templateId,userId])
+}
+
+model Strategy {
+ id String @id @default(uuid())
+ userId String
+ user User @relation(fields:[userId],references:[id],onDelete:Restrict,onUpdate:Restrict)
+ name String @db.VarChar(160)
+ description String @db.VarChar(5000)
+ revision Int @default(0)
+ archivedAt DateTime? @db.Timestamptz(3)
+ createdAt DateTime @default(now()) @db.Timestamptz(3)
+ updatedAt DateTime @updatedAt @db.Timestamptz(3)
+ requestKey String? @db.VarChar(36)
+ creationHash String? @db.VarChar(64)
+ assignments TradeStrategyAssignment[]
+ @@unique([id,userId])
+ @@unique([userId,requestKey])
+ @@index([userId,archivedAt,updatedAt,id])
+}
+model TradeStrategyAssignment {
+ id String @id @default(uuid())
+ userId String
+ tradeId String
+ accountId String
+ strategyId String
+ strategyRevision Int
+ strategyName String @db.VarChar(160)
+ strategyDescription String @db.VarChar(5000)
+ assignedAt DateTime @default(now()) @db.Timestamptz(3)
+ endedAt DateTime? @db.Timestamptz(3)
+ trade Trade @relation(fields:[tradeId,accountId,userId],references:[id,accountId,userId],onDelete:Restrict,onUpdate:Restrict)
+ strategy Strategy @relation(fields:[strategyId,userId],references:[id,userId],onDelete:Restrict,onUpdate:Restrict)
+ account TradingAccount @relation(fields:[accountId,userId],references:[id,userId],onDelete:Restrict,onUpdate:Restrict)
+ user User @relation(fields:[userId],references:[id],onDelete:Restrict,onUpdate:Restrict)
+ @@index([userId,tradeId,assignedAt,id])
+ @@index([userId,accountId,strategyId,endedAt])
+ @@index([strategyId,userId])
+}
+
+
+model AuthSecurityState {
+ userId String @id
+ user User @relation(fields:[userId],references:[id],onDelete:Restrict,onUpdate:NoAction)
+ denyLegacy Boolean @default(false)
+}
+model AuthSession {
+ id String @id
+ userId String
+ user User @relation(fields:[userId],references:[id],onDelete:Restrict,onUpdate:NoAction)
+ kind String @db.VarChar(16)
+ label String @db.VarChar(120)
+ createdAt DateTime @default(now()) @db.Timestamptz(3)
+ expiresAt DateTime @db.Timestamptz(3)
+ revokedAt DateTime? @db.Timestamptz(3)
+ @@index([userId,expiresAt,id],map:"AuthSession_owner_expiry")
+}
+model PasswordResetToken {
+ hash String @id @db.Char(64)
+ userId String
+ user User @relation(fields:[userId],references:[id],onDelete:Restrict,onUpdate:NoAction)
+ passwordFingerprint String @db.Char(64)
+ createdAt DateTime @default(now()) @db.Timestamptz(3)
+ expiresAt DateTime @db.Timestamptz(3)
+ consumedAt DateTime? @db.Timestamptz(3)
+ @@index([userId,expiresAt],map:"PasswordReset_owner_expiry")
+}
