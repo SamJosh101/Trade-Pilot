@@ -1,3 +1,4 @@
+import OwnedMedia from '../components/OwnedMedia';
 import TradeStrategy from '../components/TradeStrategy';
 import TradeChecklist from '../components/TradeChecklist';
 import { compareDecimal, validDecimal } from '../utils/decimal';
@@ -79,8 +80,9 @@ export default function EditTrade() {
         <div className="max-w-4xl">
         <Panel title={`${trade.pair} · trade plan`}>
         <p className="muted mb-5">Stored planned RR: {trade.rr ?? 'Unknown'}. Planned SL/TP edits never rebase recorded original risk or actual realized R.</p>{error && <div role="alert" className="notice error">{error}</div>}{locked && <div className="notice">Financial writes are disabled. This financially enriched or wide-precision trade is read-only.</div>}{wrongScope && <div className="notice error">Switch back to this trade's account to save. Your draft remains here.</div>}<fieldset disabled={saving || conflict || locked || wrongScope || capability.loading}>
-        <TradeForm key={id} initialValues={trade} accountId={trade.accountId} onSubmit={save} submitLabel="Save Changes" isSubmitting={saving}/>
+<TradeForm key={id} initialValues={trade} accountId={trade.accountId} onSubmit={save} submitLabel="Save Changes" isSubmitting={saving}/>
         </fieldset>
+        <OwnedMedia key={`media:${trade.id}`} target={`trade:${trade.id}`} readOnly={wrongScope||saving||conflict} revision={record?.revision??trade.revision} onSaved={revision=>{if(revision!==undefined){setTrade(t=>t?{...t,revision}:t);setRecord(p=>p?{...p,revision}:p);}void refreshAfterWrite(trade.accountId);}}/>
         <button className="button ghost section-gap" onClick={() => { setConflict(true); void inspect(); }}>Inspect latest saved plan</button>
         </Panel><details className="panel section-gap" onToggle={e=>{if(e.currentTarget.open)setChecklistOpen(true);}}><summary>Trading checklist (optional)</summary>{checklistOpen&&<TradeChecklist key={id} tradeId={trade.id} accountId={trade.accountId} onSaved={revision=>{setTrade(t=>t?{...t,revision}:t);setRecord(p=>p?{...p,revision}:p);}}/>}</details><details className="panel section-gap" onToggle={e=>{if(e.currentTarget.open)setStrategyOpen(true);}}><summary>Strategy assignment (optional)</summary>{strategyOpen&&<TradeStrategy key={id} tradeId={trade.id} accountId={trade.accountId} onSaved={revision=>{setTrade(t=>t?{...t,revision}:t);setRecord(p=>p?{...p,revision}:p);void refreshAfterWrite(trade.accountId);}}/>}</details>{record && <PerformanceEditor key={id} trade={trade} initial={record} enabled={!!capability.data?.writesEnabled} onSaved={r => { setRecord(r); setTrade(t => t ? { ...t, revision: r.revision } : t);void refreshAfterWrite(trade.accountId); }}/>}</div>{conflict && <Dialog title="Reconcile trade changes" onClose={() => setConflict(false)}>
             <p className="notice">Your draft has been preserved. Loading a newer revision does not automatically retry your save.</p>

@@ -8,6 +8,7 @@ import { useAccounts } from '../context/AccountContext'
 import AccountForm from '../components/AccountForm'
 import BrokerLogo from '../components/BrokerLogo'
 import AccountAvatar from '../components/AccountAvatar'
+import RealizedPanel from '../components/RealizedPanel'
 import type { TradingAccount, AccountInput } from '../types/account'
 
 const ACCOUNT_TYPES = ['Standard', 'Cent', 'Demo', 'Raw Spread', 'ECN', 'Other']
@@ -235,6 +236,7 @@ export default function Accounts() {
             </div>
           </div>
 
+          <section className="mb-6" aria-label="Selected account actual results"><RealizedPanel /></section>
           {/* Account List */}
           <div className="space-y-3">
             {accounts.map((account) => (

@@ -1,0 +1,20 @@
+# Reviewed template only; this file is not applied by the development test suite.
+services:
+  - type: web
+    name: tradepilot-backend
+    runtime: node
+    plan: free
+    autoDeployTrigger: "off"
+    rootDir: tradepilot-backend
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: NODE_ENV
+        value: production

@@ -1,8 +1,9 @@
 import StableAsyncContent from './StableAsyncContent';
 import { useState } from 'react';
 import { useSummary } from '../hooks/useFinancial';
-import { formatDecimal, moneyTone, unitLabel, winRateTone, winRateGuidance } from '../utils/decimal';
+import { compareDecimal, formatDecimal, moneyTone, unitLabel, winRateTone, winRateGuidance } from '../utils/decimal';
 import { Panel, EmptyState, Skeleton } from './WorkspaceUI';
+import RealizedCurve from './RealizedCurve';
 export default function RealizedPanel({ dateFilter = false, fixedFilter }: {
     dateFilter?: boolean;
     fixedFilter?: {
@@ -26,7 +27,15 @@ export default function RealizedPanel({ dateFilter = false, fixedFilter }: {
             <div className="realized-primary"><dt>Mean realized R</dt><dd className={`data performance-indicator ${moneyTone(t.meanRealizedR)}`} title={t.meanRealizedR ?? 'Unknown'}>{formatDecimal(t.meanRealizedR)}</dd><span>{t.knownRCount} completed results with known R</span></div>
             <div><dt>Net win rate</dt><dd className={`data ${winRateTone(t.netWinRate)}`} title={winRateGuidance}>{formatDecimal(t.netWinRate)}{t.netWinRate !== null ? '%' : ''}</dd><span>Known net results only</span></div>
             <div><dt>Coverage</dt><dd className="data">{t.knownNetCount}<small> / {t.closedCount}</small></dd><span>Completed net P&amp;L known</span></div>
+            {t.expectancy!==undefined&&<>
+            <div><dt>Mean winning net</dt><dd className={moneyTone(t.averageWinningNet??null)}>{formatDecimal(t.averageWinningNet??null)}</dd></div>
+            <div><dt>Mean losing net</dt><dd className={moneyTone(t.averageLosingNet??null)}>{formatDecimal(t.averageLosingNet??null)}</dd></div>
+            <div><dt>Net expectancy</dt><dd className={moneyTone(t.expectancy??null)}>{formatDecimal(t.expectancy??null)}</dd></div>
+            <div><dt>Profit factor</dt><dd className={`data ${t.profitFactor==null?'performance-unknown':compareDecimal(t.profitFactor,'1')>0?'performance-positive':compareDecimal(t.profitFactor,'1')<0?'performance-negative':'performance-neutral'}`} title={t.profitFactorReason??undefined}>{formatDecimal(t.profitFactor??null)}</dd></div>
+            <div><dt>Recorded-result drawdown</dt><dd className={moneyTone(t.maxDrawdown??null)}>{formatDecimal(t.maxDrawdown??null)}</dd><span>Known dated closes only</span></div>
+            </>}
             </dl>
+            {dateFilter&&<RealizedCurve total={t}/>}
             </div>)}</div> : <EmptyState title="Actual performance unavailable" description="Record an actual trade result with a known closing date to calculate completed performance."/>}<div className="coverage-row">
         <div>
         <strong>{data.coverage.eligibleClosed}</strong>

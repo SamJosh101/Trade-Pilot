@@ -132,6 +132,16 @@ export type Summary = {
         netPnl: string | null;
         meanRealizedR: string | null;
         netWinRate: string | null;
+        averageWinningNet?: string | null;
+        averageLosingNet?: string | null;
+        expectancy?: string | null;
+        profitFactor?: string | null;
+        profitFactorReason?: string | null;
+        maxDrawdown?: string | null;
+        curve?: Array<{closedAt:string;cumulativeNet:string|null;drawdown:string|null}>;
+        curveSampled?: boolean;
+        curveBasis?: string;
+        excludedUnknownNet?: number;
     }>;
     partials: Array<Calculation & {
         tradeId: string;

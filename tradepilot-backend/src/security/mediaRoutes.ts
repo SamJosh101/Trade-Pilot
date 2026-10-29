@@ -1,7 +1,15 @@
-import {Router} from 'express';
+import express,{Router,type Request,type Response,type NextFunction} from 'express';
+import rateLimit from 'express-rate-limit';
 import {authMiddleware} from '../middleware/authMiddleware';
+import {AppError} from '../utils/AppError';
+import * as media from './mediaService';
 const router=Router();
 router.use(authMiddleware,(_q,r,n)=>{r.setHeader('Cache-Control','no-store');n();});
-router.get('/capabilities',(_q,r)=>r.json({uploads:false,privateDeliveryVerified:false,reason:'Owned signing, validation, quotas, storage access and cleanup are not externally verified. Existing links are preserved.'}));
-router.post('/uploads',(_q,r)=>r.status(503).json({error:'New uploads are disabled. No provider request was made.'}));
+const endpoint=(fn:(q:Request,r:Response)=>Promise<unknown>)=>(q:Request,r:Response,n:NextFunction)=>{fn(q,r).catch(n);};
+router.get('/capabilities',endpoint(async(_q,r)=>r.json(await media.capabilities())));
+router.get('/current',endpoint(async(q,r)=>{if(typeof q.query.target!=='string')throw new AppError('Image target is required',400);r.json(await media.lookup(q.user!.id,q.query.target));}));
+router.get('/assets/:id/content',rateLimit({windowMs:60000,limit:30,keyGenerator:q=>q.user!.id,standardHeaders:'draft-7',legacyHeaders:false}),endpoint(async(q,r)=>{const bytes=await media.content(q.user!.id,String(q.params.id));r.setHeader('X-Content-Type-Options','nosniff');r.setHeader('Content-Security-Policy',"default-src 'none'");r.type('image/webp').send(bytes);}));
+const uploadLimit=rateLimit({windowMs:60000,limit:6,keyGenerator:q=>q.user!.id,standardHeaders:'draft-7',legacyHeaders:false});
+router.post('/uploads',uploadLimit,express.raw({type:['image/jpeg','image/png','image/webp'],limit:'5mb'}),endpoint(async(q,r)=>{const revision=q.get('X-Trade-Revision');r.status(201).json(await media.upload(q.user!.id,q.get('X-Media-Target')??'',q.get('Idempotency-Key')??'',q.get('X-Expected-Asset')??'',revision===undefined?undefined:Number(revision),q.body,q.get('Content-Type')??''));}));
+router.delete('/current',uploadLimit,endpoint(async(q,r)=>{const b=q.body;if(!b||typeof b.target!=='string'||typeof b.assetId!=='string'||Object.keys(b).some(k=>!['target','assetId','revision'].includes(k)))throw new AppError('Invalid image removal request',400);r.json(await media.detach(q.user!.id,b.target,b.assetId,b.revision));}));
 export default router;

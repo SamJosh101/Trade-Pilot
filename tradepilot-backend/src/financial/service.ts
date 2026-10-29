@@ -11,6 +11,8 @@ import { dec, normalize } from "./decimal";
 import { CAPABILITY, expectedRevision, compareRevision } from "./revision";
 import { fail, FinancialError } from "./errors";
 import { createPlan, updatePlan, exactPlannedRR } from "./planned";
+import {writesEnabled,financialStorageWritable} from './gates';
+export {writesEnabled,financialStorageWritable} from './gates';
 const include = { account: true, performance: { include: { executions: { orderBy: { id: "asc" as const } }, charges: { orderBy: { id: "asc" as const } } } } };
 function withFinancialLock<T>(uid: string, op: (tx: Prisma.TransactionClient) => Promise<T>) { return withUserLock(uid, op, { timeout: 30000 }); }
 type Loaded = Prisma.TradeGetPayload<{
@@ -21,7 +23,9 @@ export type WriteContext = {
     capability?: unknown;
 };
 function json(value: unknown): Prisma.InputJsonValue { return JSON.parse(JSON.stringify(value)); }
-export function writesEnabled() { return (env.nodeEnv === "development" || env.nodeEnv === "test") && env.financialWritesEnabled === true; }
+async function requireWritableStorage(db: Pick<Prisma.TransactionClient, '$queryRaw'>) {
+    if (!await financialStorageWritable(db)) fail('FINANCIAL_STORAGE_READ_ONLY', 'Financial storage permissions are not activated', 503);
+}
 function writeGate(ctx: WriteContext) {
     if (ctx.capability !== CAPABILITY)
         fail("CLIENT_CAPABILITY_REQUIRED", "A Version 1.1 client is required");
@@ -128,6 +132,7 @@ export function replacePerformance(userId: string, id: string, input: unknown, c
         const t = await load(tx, userId, id);
         const revision = precondition(t, input, ctx);
         writeGate(ctx);
+        await requireWritableStorage(tx);
         const p = prepare(t, input), a = p.body;
         if (p.correction && a.correctionToken !== previewToken(t, a))
             fail("CORRECTION_PREVIEW_REQUIRED");
@@ -163,6 +168,7 @@ export function setDenomination(userId: string, id: string, input: unknown, ctx:
         if (!a)
             fail("ACCOUNT_NOT_FOUND", "Account not found", 404);
         writeGate(ctx);
+        await requireWritableStorage(tx);
         const data = parse(denominationSchema, input);
         if (a.performances.length)
             fail("DENOMINATION_FROZEN");
@@ -174,6 +180,7 @@ export function setDenomination(userId: string, id: string, input: unknown, ctx:
 export function createExactTrade(userId: string, input: unknown, ctx: WriteContext) {
     return withFinancialLock(userId, async (tx) => {
         writeGate(ctx);
+        await requireWritableStorage(tx);
         const data = parse(createPlan, input);
         assertMediaChange(null,data.imageUrl);
         const account = await tx.tradingAccount.findFirst({ where: { id: data.accountId, userId } });
@@ -187,6 +194,7 @@ export function updateExactTrade(userId: string, id: string, input: unknown, ctx
         const t = await load(tx, userId, id);
         const revision = precondition(t, input, ctx);
         writeGate(ctx);
+        await requireWritableStorage(tx);
         const { expectedRevision: _, ...data } = parse(updatePlan, input);
         assertMediaChange(t.imageUrl,data.imageUrl);
         if (data.accountId) {

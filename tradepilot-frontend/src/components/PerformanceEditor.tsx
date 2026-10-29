@@ -80,7 +80,7 @@ export default function PerformanceEditor({ trade, initial, enabled, onSaved }: 
     if (!enabled)
         return <Panel title="Actual trade result">
         <PerformanceView record={base}/>
-        <div className="notice">Financial editing is unavailable on this backend. Existing journal features remain available. Production financial writes are disabled.</div>
+        <div className="notice">Actual result recording is currently unavailable. Your existing journal entries remain available.</div>
         </Panel>;
     return <div className="section-gap">
     <details className="form-section" open={!!base.performance}>

@@ -30,7 +30,8 @@ export default function Sidebar({ expanded, toggle, onNavigate, mobile=false }: 
     <LogOut size={19}/>
     <span className="rail-label">Sign out</span>
     </button>
-    <Link to="/settings" className="rail-avatar" title={user?.name} aria-label="Profile settings">{user?.name?.slice(0, 1).toUpperCase() ?? 'T'}</Link>
+    <Link to="/settings" className="rail-avatar" title={user?.name} aria-label="Profile settings"><ProfileAvatar/></Link>
     </div>
     </aside>;
 }
+import ProfileAvatar from './ProfileAvatar';

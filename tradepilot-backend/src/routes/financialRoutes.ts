@@ -14,7 +14,7 @@ router.use(authMiddleware);
 router.use(rateLimit({ windowMs: 60000, limit: 60, keyGenerator: req => req.user!.id, standardHeaders: "draft-7", legacyHeaders: false, message: { error: { code: "RATE_LIMITED", message: "Too many financial requests" } } }));
 const ctx = (req: Request) => ({ ifMatch: req.headers["if-match"], capability: req.headers["x-tradepilot-capability"] });
 const endpoint = (fn: (req: Request, res: Response) => Promise<unknown>) => (req: Request, res: Response, next: NextFunction) => { Promise.resolve(fn(req, res)).catch(next); };
-router.get('/capabilities', endpoint(async (_req, res) => { const schema=await databaseCompatibility();res.setHeader('Cache-Control', 'no-store'); res.json({ protocol: 'financial-v1.1', writesEnabled: schema.financial&&financial.writesEnabled(), schemaReady:schema.financial, calculationVersion: CALCULATION_VERSION, settlementUnits: UNIT_KEYS, maxEvents: 10000 }); }));
+router.get('/capabilities', endpoint(async (_req, res) => { const schema=await databaseCompatibility();res.setHeader('Cache-Control', 'no-store'); res.json({ protocol: 'financial-v1.1', writesEnabled: schema.financial&&await financial.financialStorageWritable(), schemaReady:schema.financial, calculationVersion: CALCULATION_VERSION, settlementUnits: UNIT_KEYS, maxEvents: 10000 }); }));
 router.use((req,_res,next)=>{
   databaseCompatibility().then(schema=>{
   if(!schema.financial){

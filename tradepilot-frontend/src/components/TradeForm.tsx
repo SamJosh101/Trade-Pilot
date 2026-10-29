@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import type { FormEvent } from 'react'
 import type { Direction, TradeInput, TradeResult } from '../types/trade'
 import {validDecimal,compareDecimal,plannedRatio} from '../utils/decimal'
 import FormField, { inputClasses } from './FormField'
-import { uploadScreenshot } from '../services/uploadService'
+
 
 type TradeFormProps = {
   initialValues?: Partial<TradeInput>
@@ -13,8 +13,7 @@ type TradeFormProps = {
   accountId: string
 }
 
-const MAX_SCREENSHOT_BYTES = 5 * 1024 * 1024
-const ACCEPTED_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp']
+
 
 export default function TradeForm({
   initialValues,
@@ -34,16 +33,6 @@ export default function TradeForm({
 
   const [imageUrl, setImageUrl] = useState<string | undefined>(initialValues?.imageUrl ?? undefined)
   const [previewUrl, setPreviewUrl] = useState<string | undefined>(initialValues?.imageUrl ?? undefined)
-  const [isUploading, setIsUploading] = useState(false)
-  const [uploadError, setUploadError] = useState('')
-  const uploadVersion = useRef(0)
-  const previewRef = useRef<string | undefined>(undefined)
-
-  useEffect(() => () => {
-    ++uploadVersion.current
-    if (previewRef.current) URL.revokeObjectURL(previewRef.current)
-  }, [])
-
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   function validate(): boolean {
@@ -64,58 +53,7 @@ export default function TradeForm({
     return Object.keys(newErrors).length === 0
   }
 
-  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0]
-    if (!file) {
-      return
-    }
-
-    setUploadError('')
-
-    if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
-      setUploadError('Screenshot must be a PNG, JPEG, or WEBP image')
-      event.target.value = ''
-      return
-    }
-
-    if (file.size > MAX_SCREENSHOT_BYTES) {
-      setUploadError('Screenshot must be under 5MB')
-      event.target.value = ''
-      return
-    }
-
-    const localPreview = URL.createObjectURL(file)
-    if (previewRef.current) URL.revokeObjectURL(previewRef.current)
-    previewRef.current = localPreview
-    const version = ++uploadVersion.current
-    setPreviewUrl(localPreview)
-    setIsUploading(true)
-
-    try {
-      const uploadedUrl = await uploadScreenshot(file)
-      if (version !== uploadVersion.current) return
-      setImageUrl(uploadedUrl)
-      setPreviewUrl(uploadedUrl)
-    } catch (err) {
-      if (version !== uploadVersion.current) return
-      setUploadError('Screenshot upload failed')
-      setPreviewUrl(imageUrl)
-      console.error(err)
-    } finally {
-      if (version === uploadVersion.current) setIsUploading(false)
-      URL.revokeObjectURL(localPreview)
-    }
-  }
-
-  function handleRemoveScreenshot() {
-    ++uploadVersion.current
-    setIsUploading(false)
-    if (previewRef.current) URL.revokeObjectURL(previewRef.current)
-    setImageUrl(undefined)
-    setPreviewUrl(undefined)
-    setUploadError('')
-  }
-
+  function handleRemoveScreenshot() {setImageUrl(undefined);setPreviewUrl(undefined)}
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
@@ -234,15 +172,9 @@ export default function TradeForm({
         />
       </FormField>
 
-      </div><div className="full"><FormField label="Screenshot (optional)" error={uploadError}>
-        <p className="text-xs text-text-muted">New uploads are disabled pending verified owned media storage. Existing links remain available; removing a link does not delete the remote file.</p>
-        <input
-          accept="image/png,image/jpeg,image/webp"
-          disabled
-          className={inputClasses}
-          onChange={handleFileChange}
-          type="file"
-        />
+      </div><div className="full"><FormField label="Screenshot (optional)" >
+        <p className="text-xs text-text-muted">Save the trade first, then use its owned screenshot section. Existing legacy links remain available; removing a legacy link does not delete the remote file.</p>
+
         {previewUrl && (
           <div className="mt-2 flex items-center gap-3">
             <img
@@ -251,7 +183,7 @@ export default function TradeForm({
               src={previewUrl}
             />
             <div className="flex flex-col gap-1">
-              {isUploading && <span className="text-sm text-text-muted">Uploading...</span>}
+
               <button
                 className="text-sm text-negative hover:opacity-80"
                 onClick={handleRemoveScreenshot}
@@ -266,7 +198,7 @@ export default function TradeForm({
 
       </div><p className="full notice">Planned RR preview: <strong>{plannedRatio(direction,String(entry),String(sl),String(tp))??'Unknown'}</strong>. Exact geometry only; the saved planned RR remains authoritative. This is not actual realized R.</p><button
         className="full w-full rounded-md bg-accent px-4 py-2.5 text-sm font-medium text-bg-base transition hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
-        disabled={isSubmitting || isUploading}
+        disabled={isSubmitting}
         type="submit"
       >
         {isSubmitting ? 'Submitting...' : submitLabel}

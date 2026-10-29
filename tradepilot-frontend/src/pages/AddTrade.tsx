@@ -1,5 +1,6 @@
+import OwnedMedia from '../components/OwnedMedia';
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useTrades } from '../context/TradeContext';
 import { useAccounts } from '../context/AccountContext';
 import { useCapability } from '../hooks/useFinancial';
@@ -11,7 +12,6 @@ import * as legacy from '../services/tradeService';
 import type { Trade, TradeInput } from '../types/trade';
 import type { Performance } from '../types/financial';
 export default function AddTrade() {
-    const navigate = useNavigate();
     const { refreshAfterWrite } = useTrades();
     const { activeAccount, isLoading } = useAccounts();
     const capability = useCapability();
@@ -23,8 +23,7 @@ export default function AddTrade() {
         if (actual && capability.data?.writesEnabled) {
             setRecord(await financial.performance(t.id));
         }
-        else
-            navigate('/trades');
+        // Keep the saved entry open for an optional screenshot; never create it twice.
     }
     catch (e) {
         setError(financial.apiError(e));
@@ -42,7 +41,7 @@ export default function AddTrade() {
         <p className="notice success">Your basic trade is saved. Any actual result below is a separate transaction. Do not create the plan again if the financial save fails.</p>
         <Link className="button" to={`/trades/${created.id}/edit`}>Open saved trade</Link>
         <Link className="button ghost" to="/trades">Finish</Link>
-        </Panel>{record && <PerformanceEditor key={created.id} trade={created} initial={record} enabled={!!capability.data?.writesEnabled} onSaved={setRecord}/>}</> : <div className="max-w-4xl">
+        </Panel><OwnedMedia key={created.id} target={`trade:${created.id}`} revision={record?.revision??created.revision} onSaved={revision=>{if(revision!==undefined){setCreated(t=>t?{...t,revision}:t);setRecord(p=>p?{...p,revision}:p);}void refreshAfterWrite(created.accountId);}}/>{record && <PerformanceEditor key={created.id} trade={created} initial={record} enabled={!!capability.data?.writesEnabled} onSaved={setRecord}/>}</> : <div className="max-w-4xl">
         <Panel title={`Trade plan · ${activeAccount.name}`}>
         <p className="muted mb-6">Prices are kept as exact strings. Legacy outcome is a journal label, never proof of actual P&L.</p>{error && <div role="alert" className="notice error">{error}</div>}{uncertain ? <div className="notice">Creation may have committed. Your draft remains below. <button type="button" className="button" onClick={async () => { try {
             setInspection(await legacy.getAll(activeAccount.id));

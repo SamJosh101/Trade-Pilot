@@ -4,6 +4,7 @@ import { project } from "./service";
 import { dec, canonical } from "./decimal";
 import { fail } from "./errors";
 import { CALCULATION_VERSION } from "./calculate";
+import {completedMetrics,type ClosedResult} from './completedMetrics';
 export type PerformanceFilter = {
     accountId?: string;
     from?: Date;
@@ -26,6 +27,7 @@ export async function realizedSummary(userId: string, filter: PerformanceFilter 
             winCount: number;
             net: ReturnType<typeof dec>;
             r: ReturnType<typeof dec>;
+            rows: ClosedResult[];
         }> = {};
         const coverage = { totalTrades: count, notRecorded: 0, invalidRecorded: 0, unknownStatus: 0, undatedClosed: 0, eligibleClosed: 0, missingNet: 0, missingRisk: 0, missingRealizedR: 0, partialCount: 0 };
         const missingReasons: Record<string, number> = {};
@@ -75,7 +77,8 @@ export async function realizedSummary(userId: string, filter: PerformanceFilter 
                     coverage.missingRisk++;
                 if (!d.moneyUnitKey)
                     continue;
-                const g = groups[d.moneyUnitKey] ??= { closedCount: 0, knownNetCount: 0, knownRCount: 0, winCount: 0, net: dec(0), r: dec(0) };
+                const g = groups[d.moneyUnitKey] ??= { closedCount: 0, knownNetCount: 0, knownRCount: 0, winCount: 0, net: dec(0), r: dec(0), rows: [] };
+                g.rows.push({id:row.id,closedAt:a.closedAt,net:d.netPnl,r:d.realizedR});
                 g.closedCount++;
                 if (d.netPnl !== null) {
                     g.net = g.net.plus(d.netPnl);
@@ -90,7 +93,7 @@ export async function realizedSummary(userId: string, filter: PerformanceFilter 
             }
             cursor = rows[rows.length - 1].id;
         }
-        return { calculationVersion: CALCULATION_VERSION, closedDateFilter: { from: filter.from?.toISOString() ?? null, to: filter.to?.toISOString() ?? null, bounds: "[from,to)" }, coverageDateBasis: "Coverage describes all owned records; eligibleClosed and totals apply the closedAt filter", coverage, missingReasons, totals: Object.entries(groups).map(([moneyUnitKey, g]) => ({ moneyUnitKey, closedCount: g.closedCount, knownNetCount: g.knownNetCount, knownRCount: g.knownRCount, netPnl: g.knownNetCount ? canonical(g.net) : null, meanRealizedR: g.knownRCount ? canonical(g.r.div(g.knownRCount)) : null, netWinRate: g.knownNetCount ? canonical(dec(g.winCount).div(g.knownNetCount).times(100)) : null })), partials, partialsTruncated: coverage.partialCount > partials.length, partialDateBasis: "Current open exposure, independent of completed closedAt date filter", balance: null, equity: null };
+        return { calculationVersion: CALCULATION_VERSION, closedDateFilter: { from: filter.from?.toISOString() ?? null, to: filter.to?.toISOString() ?? null, bounds: "[from,to)" }, coverageDateBasis: "Coverage describes all owned records; eligibleClosed and totals apply the closedAt filter", coverage, missingReasons, totals: Object.entries(groups).map(([moneyUnitKey, g]) => ({ moneyUnitKey, ...completedMetrics(g.rows), closedCount: g.closedCount, knownNetCount: g.knownNetCount, knownRCount: g.knownRCount, netPnl: g.knownNetCount ? canonical(g.net) : null, meanRealizedR: g.knownRCount ? canonical(g.r.div(g.knownRCount)) : null, netWinRate: g.knownNetCount ? canonical(dec(g.winCount).div(g.knownNetCount).times(100)) : null })), partials, partialsTruncated: coverage.partialCount > partials.length, partialDateBasis: "Current open exposure, independent of completed closedAt date filter", balance: null, equity: null };
     }, { isolationLevel: Prisma.TransactionIsolationLevel.RepeatableRead, timeout: 30000 });
 }
 

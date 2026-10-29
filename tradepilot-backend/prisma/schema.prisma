@@ -24,6 +24,8 @@ model User {
   authSecurity AuthSecurityState?
   authSessions AuthSession[]
   passwordResets PasswordResetToken[]
+  mediaAssets MediaAsset[]
+  recoveryDeliveries RecoveryDelivery[]
 
   @@index([email])
 }
@@ -85,6 +87,7 @@ model Trade {
   rr        Decimal?  @db.Decimal(5, 2)
   revision Int @default(0)
   performance TradePerformance?
+  mediaAssets MediaAsset[]
   checklist TradeGameplanSnapshot?
   strategyAssignments TradeStrategyAssignment[]
   @@unique([id,accountId,userId])
@@ -341,6 +344,7 @@ model AuthSession {
  @@index([userId,expiresAt,id],map:"AuthSession_owner_expiry")
 }
 model PasswordResetToken {
+ deliveries RecoveryDelivery[]
  hash String @id @db.Char(64)
  userId String
  user User @relation(fields:[userId],references:[id],onDelete:Restrict,onUpdate:NoAction)
@@ -349,4 +353,46 @@ model PasswordResetToken {
  expiresAt DateTime @db.Timestamptz(3)
  consumedAt DateTime? @db.Timestamptz(3)
  @@index([userId,expiresAt],map:"PasswordReset_owner_expiry")
+}
+
+model MediaAsset {
+ id String @id
+ userId String
+ user User @relation(fields:[userId],references:[id],onDelete:Restrict,onUpdate:Restrict,map:"Media_user")
+ purpose String @db.VarChar(16)
+ targetKey String @db.VarChar(128)
+ tradeId String?
+ accountId String?
+ trade Trade? @relation(fields:[tradeId,accountId,userId],references:[id,accountId,userId],onDelete:Restrict,onUpdate:Restrict,map:"Media_trade_owner")
+ requestKey String @db.Uuid
+ fingerprint String @db.Char(64)
+ publicId String @unique @db.VarChar(200)
+ state String @db.VarChar(16)
+ bytes Int @default(5242880)
+ createdAt DateTime @default(now()) @db.Timestamptz(3)
+ updatedAt DateTime @default(now()) @db.Timestamptz(3)
+ @@unique([userId,requestKey])
+ @@index([state,updatedAt,id],map:"Media_cleanup")
+ @@index([tradeId,accountId,userId],map:"Media_trade")
+}
+model FeatureUsage {
+ key String @id @db.VarChar(160)
+ amount BigInt
+}
+model RecoveryDelivery {
+ id String @id @db.Uuid
+ recipientHash String @db.Char(64)
+ userId String?
+ user User? @relation(fields:[userId],references:[id],onDelete:Restrict,onUpdate:Restrict,map:"RecoveryDelivery_user")
+ tokenHash String? @db.Char(64)
+ token PasswordResetToken? @relation(fields:[tokenHash],references:[hash],onDelete:Restrict,onUpdate:Restrict,map:"RecoveryDelivery_token")
+ ciphertext String?
+ state String @default("PENDING") @db.VarChar(16)
+ attempts Int @default(0)
+ createdAt DateTime @default(now()) @db.Timestamptz(3)
+ expiresAt DateTime @db.Timestamptz(3)
+ leaseUntil DateTime? @db.Timestamptz(3)
+ finishedAt DateTime? @db.Timestamptz(3)
+ @@index([recipientHash,createdAt],map:"RecoveryDelivery_recipient")
+ @@index([state,createdAt],map:"RecoveryDelivery_queue")
 }

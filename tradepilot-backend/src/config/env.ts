@@ -16,7 +16,11 @@ export const env = {
   stagingEnabled: process.env.TRADEPILOT_STAGING === 'true',
   stagingAccessKey: process.env.TRADEPILOT_STAGING_ACCESS_KEY,
   authSecurityRequired: process.env.TRADEPILOT_AUTH_SECURITY_REQUIRED === 'true',
-  financialWritesEnabled: process.env.TRADEPILOT_FINANCIAL_WRITES === "true" && ["development","test"].includes(process.env.NODE_ENV || "development"),
+  financialWritesEnabled: process.env.TRADEPILOT_FINANCIAL_WRITES === "true" &&
+    ((process.env.NODE_ENV || 'development') !== 'production' || process.env.TRADEPILOT_FINANCIAL_POLICY === 'v11-linear-1'),
+  financialPolicy: process.env.TRADEPILOT_FINANCIAL_POLICY,
+  mediaUploadsEnabled: process.env.TRADEPILOT_MEDIA_UPLOADS === 'true',
+  passwordRecoveryEnabled: process.env.TRADEPILOT_PASSWORD_RECOVERY === 'true',
   port: Number(process.env.PORT) || 4000,
   nodeEnv: process.env.NODE_ENV || "development",
   databaseUrl: required("DATABASE_URL"),

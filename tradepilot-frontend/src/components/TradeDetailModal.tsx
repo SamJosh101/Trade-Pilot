@@ -1,3 +1,4 @@
+import OwnedMedia from './OwnedMedia';
 import TradeStrategy from './TradeStrategy';
 import TradeChecklist from './TradeChecklist';
 import { useEffect, useState } from 'react';
@@ -38,7 +39,7 @@ export default function TradeDetailModal({ trade, onClose }: {
             </div>)}</dl>
         <p className="muted">Planned RR and legacy score do not establish actual monetary performance.</p>{trade.notes && <div className="section-gap">
             <h2>Notes</h2>
-            <p className="detail-notes">{trade.notes}</p>
+            <OwnedMedia key={trade.id} target={`trade:${trade.id}`} readOnly/><p className="detail-notes">{trade.notes}</p>
             </div>}</>}{(tab === 'Overview' || tab === 'Actual performance') && <div className="section-gap">
         <h2 className="mb-4">Actual result</h2>{record ? <PerformanceView record={record}/> : error ? <div className="notice">Actual performance unavailable. {error}<button className="button" onClick={() => setReload(v => v + 1)}>Retry</button>
             </div> : <p className="muted">Loading actual record…</p>}</div>}{tab === 'Executions' && <>{actual?.executions.length ? <div className="table-scroll">
@@ -82,7 +83,7 @@ export default function TradeDetailModal({ trade, onClose }: {
                 </tr>)}</tbody>
             </table>
             </div> : <p className="notice">No charge details recorded; absence alone does not mean costs are zero.</p>}</>}{tab === 'Notes & screenshot' && <>
-        <p className="detail-notes">{trade.notes ?? 'No notes recorded.'}</p>{trade.imageUrl ? <a href={trade.imageUrl} target="_blank" rel="noopener noreferrer">
+        <OwnedMedia key={trade.id} target={`trade:${trade.id}`} readOnly/><p className="detail-notes">{trade.notes ?? 'No notes recorded.'}</p>{trade.imageUrl ? <a href={trade.imageUrl} target="_blank" rel="noopener noreferrer"><span>Legacy external screenshot · existing privacy unchanged</span>
             <img className="detail-image" src={trade.imageUrl} alt={`${trade.pair} recorded chart screenshot`}/>
-            </a> : <p className="notice">No screenshot recorded.</p>}</>}{tab==='Checklist'&&<TradeChecklist key={trade.id} tradeId={trade.id} accountId={trade.accountId} readOnly/>}{tab==='Strategy'&&<TradeStrategy key={trade.id} tradeId={trade.id} accountId={trade.accountId} readOnly/>}</Dialog>;
+            </a> : <p className="muted">No legacy external screenshot link.</p>}</>}{tab==='Checklist'&&<TradeChecklist key={trade.id} tradeId={trade.id} accountId={trade.accountId} readOnly/>}{tab==='Strategy'&&<TradeStrategy key={trade.id} tradeId={trade.id} accountId={trade.accountId} readOnly/>}</Dialog>;
 }

@@ -17,6 +17,7 @@ import EditTrade from '../pages/EditTrade'
 import Landing from '../pages/Landing'
 import Login from '../pages/Login'
 import Register from '../pages/Register'
+import PasswordRecovery from '../pages/PasswordRecovery'
 import Trades from '../pages/Trades'
 import ProtectedRoute from './ProtectedRoute'
 
@@ -26,6 +27,8 @@ export default function AppRoutes() {
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<PasswordRecovery key="request" />} />
+      <Route path="/reset-password" element={<PasswordRecovery key="reset" reset />} />
       <Route
         element={
           <ProtectedRoute>
