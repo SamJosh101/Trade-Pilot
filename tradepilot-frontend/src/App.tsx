@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthContext'
 import { TradeProvider } from './context/TradeContext'
 import { AccountProvider, useAccounts } from './context/AccountContext'
 import AppRoutes from './routes/AppRoutes'
+import {WorkspaceProvider} from './context/WorkspaceContext'
 
 function TradeProviderWithAccountSync({ children }: { children: React.ReactNode }) {
   const { fetchAccounts } = useAccounts()
@@ -18,6 +19,7 @@ function App() {
   return (
     <BrowserRouter>
     <AuthProvider>
+      <WorkspaceProvider>
       <AccountProvider>
         <TradeProviderWithAccountSync>
 
@@ -25,6 +27,7 @@ function App() {
 
         </TradeProviderWithAccountSync>
       </AccountProvider>
+      </WorkspaceProvider>
     </AuthProvider>
     </BrowserRouter>
   )

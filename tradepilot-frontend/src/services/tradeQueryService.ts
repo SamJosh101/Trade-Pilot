@@ -1,7 +1,7 @@
 import api from '../api/apiClient';
 import type {Performance} from '../types/financial';
 import type {Trade} from '../types/trade';
-export type TradeQuery={accountId:string;q?:string;direction?:string;result?:string;status?:string;timeframe?:string;timeframeMissing?:string;strategyId?:string;dateBasis?:string;dateState?:string;timezone?:string;from?:string;through?:string;sort?:string;limit?:number;cursor?:string};
+export type TradeQuery={accountId:string;q?:string;pair?:string;direction?:string;result?:string;status?:string;timeframe?:string;timeframeMissing?:string;strategyId?:string;dateBasis?:string;dateState?:string;timezone?:string;from?:string;through?:string;sort?:string;limit?:number;cursor?:string};
 export type TradePage={items:Trade[];financial?:Record<string,Pick<Performance,'tradeId'|'revision'|'derived'>>;total:number;unknownDateCount:number;nextCursor:string|null;bounds:{from:string|null;to:string|null}};
 export async function list(q:TradeQuery,signal?:AbortSignal){return(await api.get<TradePage>('/trade-query',{params:q,signal})).data;}
 export async function capabilities(signal?:AbortSignal){return(await api.get<{available:boolean;protocol:string}>('/trade-query/capabilities',{signal})).data;}

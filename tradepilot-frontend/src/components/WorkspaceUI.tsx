@@ -7,7 +7,7 @@ export function Brand({ compact = false }: {
     return <Link to="/dashboard" aria-label="TradePilot home" className="brand">
     <span className="brand-mark">
     <svg viewBox="0 0 28 28" aria-hidden="true">
-    <path d="M6 21V7h9a5 5 0 0 1 0 10H9M11 23 22 5M16 5h6v6"/>
+    <path d="M7 21 21 7M8 7h13v13"/>
     </svg>
     </span>{!compact && <span>TradePilot<span className="brand-dot">.</span>
         </span>}</Link>;
@@ -29,13 +29,14 @@ export function PageHeading({ title, description, children }: {
 }) {
     return <div className="page-heading">
     <div>
+    <div className="page-eyebrow">TradePilot / {title}</div>
     <h1>{title}</h1>{description && <p>{description}</p>}</div>
     <div className="page-actions">{children}</div>
     </div>;
 }
-export function NewTrade() {
+export function NewTrade({label='New trade'}:{label?:string}) {
     return <Link className="button primary" to="/trades/new">
-    <Plus size={16}/>New trade</Link>;
+    <Plus size={16}/>{label}</Link>;
 }
 export function EmptyState({ title, description, action }: {
     title: string;

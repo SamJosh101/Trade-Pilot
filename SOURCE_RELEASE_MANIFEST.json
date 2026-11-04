@@ -1,0 +1,1203 @@
+{
+  "parentCommit": "6811a4c7898316a06d0f0dc0e6266b80b73688a1",
+  "approvedSourceDigest": "b06441fa81548da932fdecb9c48847f1e391b7be2c1634f7ddca6cae13622539",
+  "sourceDigestSha256": "98521f6dc2b5b2e66c726dd075e1d538b2a0bc022ad9e39e812519eb7a319919",
+  "fileCount": 236,
+  "compatibilityChanges": [
+    "tradepilot-backend/src/config/env.ts",
+    "tradepilot-frontend/src/types/financial.ts"
+  ],
+  "restoredFiles": [
+    ".gitattributes",
+    ".gitignore",
+    "render.yaml",
+    "tradepilot-backend/.npmrc",
+    "tradepilot-backend/src/security/recovery.ts",
+    "tradepilot-frontend/src/components/OwnedMedia.tsx",
+    "tradepilot-frontend/src/components/ProfileAvatar.tsx",
+    "tradepilot-frontend/src/components/RealizedCurve.tsx",
+    "tradepilot-frontend/src/pages/PasswordRecovery.tsx"
+  ],
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 8,
+      "sha256": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 32,
+      "sha256": "eaf37f077512b43b691031e05b019f768fc84a0544250a0f2937a04509a80525"
+    },
+    {
+      "path": "render.yaml",
+      "bytes": 746,
+      "sha256": "9727b9bf908028d211f48fdf6a94b9818b5f749aca5ded9a63979779ef7d7087"
+    },
+    {
+      "path": "tradepilot-backend/.env.example",
+      "bytes": 1205,
+      "sha256": "a08b4ff20f8a37090d6482d38734373626da82bf3ee1868e16ea334daccb3a1d"
+    },
+    {
+      "path": "tradepilot-backend/.npmrc",
+      "bytes": 174,
+      "sha256": "06952317a99ca94d81e9b093e00fc1b64adbf07ca8e1a3d5e81dd583879fa73f"
+    },
+    {
+      "path": "tradepilot-backend/package-lock.json",
+      "bytes": 168005,
+      "sha256": "989a2bca6dab6f412e9b115a8f70b4ed13ef857051cdbb121c1d144e0d8344a8"
+    },
+    {
+      "path": "tradepilot-backend/package.json",
+      "bytes": 2730,
+      "sha256": "060f694eb98387c712f7f9e1558b886fdd2e7ed396070a22151ed0b681944f23"
+    },
+    {
+      "path": "tradepilot-backend/prisma/migrations/20260717013555_init/migration.sql",
+      "bytes": 1319,
+      "sha256": "bb155a0ffde03ea3ecdb70855ada1bef89d779c5bc7c5faf05424eb096bb37fc"
+    },
+    {
+      "path": "tradepilot-backend/prisma/migrations/20260727230415_add_trading_accounts/migration.sql",
+      "bytes": 887,
+      "sha256": "d520d1ecefab4baffec3a3fea49e41a6c81a83b7f0912bcca0d377c7c34760a6"
+    },
+    {
+      "path": "tradepilot-backend/prisma/migrations/20260727230617_require_account_id/migration.sql",
+      "bytes": 222,
+      "sha256": "8cce6b39b5354d05ea12611e04809e7bff5b961f4d93c1f6c344bb1acca6e82a"
+    },
+    {
+      "path": "tradepilot-backend/prisma/migrations/20260920072018_add_account_current_and_broker_fields/migration.sql",
+      "bytes": 346,
+      "sha256": "240b65dd417fca128c242ca037d174b3cc928f4ccfda085a181eb84127b06190"
+    },
+    {
+      "path": "tradepilot-backend/prisma/migrations/20261021000000_v11_financial_foundation/migration.sql",
+      "bytes": 13937,
+      "sha256": "931e87c92db57eef774328e43b505c136876fa052df1fe8dd396efbbd877a3e4"
+    },
+    {
+      "path": "tradepilot-backend/prisma/migrations/20261024000000_persistent_notes/migration.sql",
+      "bytes": 3037,
+      "sha256": "9af361922234a07a166965e65e3009b810c3b3307e02e2b8c64fff1107864b3e"
+    },
+    {
+      "path": "tradepilot-backend/prisma/migrations/20261025000000_gameplans/migration.sql",
+      "bytes": 5350,
+      "sha256": "87866b8c7cdcada9bcc3a3d4b88af1ac2ee8140057536b7fc3de8aec902ae14e"
+    },
+    {
+      "path": "tradepilot-backend/prisma/migrations/20261026000000_strategies/migration.sql",
+      "bytes": 3465,
+      "sha256": "1d2060e61736c6c90ecd5042a3fdb896543235cc25bf59e64b49450046f3e82d"
+    },
+    {
+      "path": "tradepilot-backend/prisma/migrations/20261027000000_trade_query_indexes/migration.sql",
+      "bytes": 451,
+      "sha256": "b3ed05bacee0f9fc56505e5e5f0092f1bdc4d7d78091724c6d4e34522f3737f0"
+    },
+    {
+      "path": "tradepilot-backend/prisma/migrations/20261028000000_auth_security/migration.sql",
+      "bytes": 1262,
+      "sha256": "fcd83d8254e68a652d2a886f33be1d1af9f016e8bc20b56ff285f0a7fb1cf31f"
+    },
+    {
+      "path": "tradepilot-backend/prisma/migrations/20261029000000_owned_media_recovery/migration.sql",
+      "bytes": 3349,
+      "sha256": "f1c733a902f3135589672c72f7f4ad3a1bbf7e3fb97d0b992fd78b2734308750"
+    },
+    {
+      "path": "tradepilot-backend/prisma/migrations/20261102000000_workspace_preferences/migration.sql",
+      "bytes": 393,
+      "sha256": "d2cb891fddf6daef99e271f700612bba21e56e1bb9ad5f47a75d0646385c52a2"
+    },
+    {
+      "path": "tradepilot-backend/prisma/migrations/migration_lock.toml",
+      "bytes": 128,
+      "sha256": "99836963713b4f5b269ad49af0ed3d7b0b2e336115c2f92dc9ac683d139d0900"
+    },
+    {
+      "path": "tradepilot-backend/prisma/schema-only.config.ts",
+      "bytes": 168,
+      "sha256": "c3ebe5dd94b5cc224b24e7bc884003a9c6ea187898dd2dcf80e5e9bdfcfdaa72"
+    },
+    {
+      "path": "tradepilot-backend/prisma/schema.prisma",
+      "bytes": 12162,
+      "sha256": "78c1fc611f217cc611a317f9cdb16b2298aae5e293f1b388ef6ff94d355bb813"
+    },
+    {
+      "path": "tradepilot-backend/render.yaml",
+      "bytes": 692,
+      "sha256": "14eed7a515aa72bf4cae695c29c2ad74013b877f19d5a7ac8f4ea8633ff3cd5d"
+    },
+    {
+      "path": "tradepilot-backend/src/app.ts",
+      "bytes": 1308,
+      "sha256": "df57a0df8fa1680422e684bb857e80479e48c2c5f7ef17d9f3a22af639fc688a"
+    },
+    {
+      "path": "tradepilot-backend/src/config/env.ts",
+      "bytes": 1387,
+      "sha256": "51efa62c9adfa8cdacf933881b90fc7c9efa714f662986965ef136aeb25c65de"
+    },
+    {
+      "path": "tradepilot-backend/src/config/prisma.ts",
+      "bytes": 765,
+      "sha256": "ef6ddb74cd3d9bb264b7b1b0053364a8978f426332e90b3ccebc872b04ad6b45"
+    },
+    {
+      "path": "tradepilot-backend/src/controllers/accountController.ts",
+      "bytes": 2006,
+      "sha256": "cd33042fbbd72eb1fd76162cb9fa4a776f86c4c446cbd3321a6dfc0a953f1099"
+    },
+    {
+      "path": "tradepilot-backend/src/controllers/analyticsController.ts",
+      "bytes": 955,
+      "sha256": "0ec2b8e21a04783e760b63d861c4099775135627df2d10bfe3bc7e212386d385"
+    },
+    {
+      "path": "tradepilot-backend/src/controllers/authController.ts",
+      "bytes": 984,
+      "sha256": "dbecf1f580931bd0177f9a29331e1a2e1de496dde4917d2f24f0a3f3f7656be5"
+    },
+    {
+      "path": "tradepilot-backend/src/controllers/dashboardController.ts",
+      "bytes": 496,
+      "sha256": "621cd1234996b73fd18e3ef8c633105e335fe880276dfcda8bd3a5a702852ec5"
+    },
+    {
+      "path": "tradepilot-backend/src/controllers/tradeController.ts",
+      "bytes": 1571,
+      "sha256": "5b19e403e58b57296b16047126f919499ac0409cec8aec84b84fc7369f6a9117"
+    },
+    {
+      "path": "tradepilot-backend/src/financial/calculate.ts",
+      "bytes": 11228,
+      "sha256": "8893a0ca7d6893c9c1625124effe5bd8f89e7157ed500ba85c3c6fa23c54a875"
+    },
+    {
+      "path": "tradepilot-backend/src/financial/completedMetrics.ts",
+      "bytes": 1873,
+      "sha256": "4257d473bfa25cfe9111b81fe83f41a10e3bd6a853c57ce7208317c83d95d69c"
+    },
+    {
+      "path": "tradepilot-backend/src/financial/decimal.ts",
+      "bytes": 1360,
+      "sha256": "bfb4bb495b151a8c43337e7c82a4fd8e6ebbc25489f02439f2ec35957b8d76ac"
+    },
+    {
+      "path": "tradepilot-backend/src/financial/errors.ts",
+      "bytes": 443,
+      "sha256": "3537b168523d27b5ce5c036952d98981106314db4c5760d309edc94ab7624153"
+    },
+    {
+      "path": "tradepilot-backend/src/financial/gates.ts",
+      "bytes": 880,
+      "sha256": "d013e926a42ebaee5e0eb9864d20340ce2e1a3fea445f8be5896e449e1ffbf5b"
+    },
+    {
+      "path": "tradepilot-backend/src/financial/planned.ts",
+      "bytes": 1377,
+      "sha256": "efb73f07f8348e9148a523680331d97176e8b65d9b9db164b04899424afbbddb"
+    },
+    {
+      "path": "tradepilot-backend/src/financial/queries.ts",
+      "bytes": 5759,
+      "sha256": "222387264c8bc6247c9057e97afee985d95a53427181ab17723c803871ce2c3b"
+    },
+    {
+      "path": "tradepilot-backend/src/financial/revision.ts",
+      "bytes": 1573,
+      "sha256": "a26b399014cd1e24b440cd6b11cc0f20e30565cc02c9fb7a9bdd22ff84415853"
+    },
+    {
+      "path": "tradepilot-backend/src/financial/schemas.ts",
+      "bytes": 4152,
+      "sha256": "8e6fcaaf9e5bdee866d5ccdcb6e9b319a20436df23ca0f19cdc548963148350b"
+    },
+    {
+      "path": "tradepilot-backend/src/financial/service.ts",
+      "bytes": 16449,
+      "sha256": "b7540df558b9a6f68aee35892ae62f46c8b143c7d71b7b60278661f0711015f8"
+    },
+    {
+      "path": "tradepilot-backend/src/gameplans/schemas.ts",
+      "bytes": 1168,
+      "sha256": "9fbf2dc795bf5376132cadd8deb2aff077ffbd1fc053de8f0c1c4a4766052a0f"
+    },
+    {
+      "path": "tradepilot-backend/src/gameplans/service.ts",
+      "bytes": 11082,
+      "sha256": "9e8a36fc4c0c84a2b2ca0f2a207da53799e150a3219a1fc9647a83e8c0ba78a7"
+    },
+    {
+      "path": "tradepilot-backend/src/middleware/authMiddleware.ts",
+      "bytes": 1455,
+      "sha256": "9ee46dea079b21702b2705071b19d1c6b3181082b7fedb194dbe1fe3dde13215"
+    },
+    {
+      "path": "tradepilot-backend/src/middleware/errorHandler.ts",
+      "bytes": 3042,
+      "sha256": "4de97961b586bde1375047a3c6f5619125265360c48d4d54e4a1d63565dd73fe"
+    },
+    {
+      "path": "tradepilot-backend/src/middleware/rateLimiter.ts",
+      "bytes": 481,
+      "sha256": "a0ff1e5b13979a2bad67727db19836a6b74fb314f754ea38129c5ecee36cdc78"
+    },
+    {
+      "path": "tradepilot-backend/src/middleware/validate.ts",
+      "bytes": 607,
+      "sha256": "8aab1bde426d4cb7570005afb13a8113d53ffc56a0c9c4ebdf2fdbf3378cdec9"
+    },
+    {
+      "path": "tradepilot-backend/src/notes/errors.ts",
+      "bytes": 255,
+      "sha256": "974010fc3ff526ff9c119f5a1da79fafdabeb37473c1d28d891efd2c1ff8261a"
+    },
+    {
+      "path": "tradepilot-backend/src/notes/schemas.ts",
+      "bytes": 1875,
+      "sha256": "60fa971abf980fab669b5258ff49c50ce0dabb8b46754ffbc766807901d6ae2b"
+    },
+    {
+      "path": "tradepilot-backend/src/notes/service.ts",
+      "bytes": 12232,
+      "sha256": "a7d877c01c1c7c8134419a9505b3b05cd0947135f3c7560d27ac32e6fa720764"
+    },
+    {
+      "path": "tradepilot-backend/src/routes/accountRoutes.ts",
+      "bytes": 817,
+      "sha256": "8cb207aa137385401228818ef19e44e737d8bf89287f35d83271e211d85f71a9"
+    },
+    {
+      "path": "tradepilot-backend/src/routes/analyticsRoutes.ts",
+      "bytes": 360,
+      "sha256": "57d16cee788a1906e1e176341b92d6403626a4fff1c7c4c3c23aa115b0341ae8"
+    },
+    {
+      "path": "tradepilot-backend/src/routes/authRoutes.ts",
+      "bytes": 1057,
+      "sha256": "0375d060d34a61ea039bf7e9cd4d854965d8df45ca0deba305735eef048c7cac"
+    },
+    {
+      "path": "tradepilot-backend/src/routes/dashboardRoutes.ts",
+      "bytes": 308,
+      "sha256": "009acad47c59ce4e250e7f3c6576315693913e737992639b4f1877d1a9b3a8a9"
+    },
+    {
+      "path": "tradepilot-backend/src/routes/financialRoutes.ts",
+      "bytes": 4137,
+      "sha256": "7039cd5e1c146b6842a2be098706f95ee3f1f8c0c0da07ae2b4a494152de133a"
+    },
+    {
+      "path": "tradepilot-backend/src/routes/gameplanRoutes.ts",
+      "bytes": 2827,
+      "sha256": "152b2738744b67e3637f037e72d9830e791661a6e639cb6945c9c6afa23d7da2"
+    },
+    {
+      "path": "tradepilot-backend/src/routes/index.ts",
+      "bytes": 1509,
+      "sha256": "9b7ef6f5c5a5620ee93d7fc509580e06cff460cb5c69246c787541dedd11e30b"
+    },
+    {
+      "path": "tradepilot-backend/src/routes/notesRoutes.ts",
+      "bytes": 4131,
+      "sha256": "fdd7ca01e9f3edb320851af758654b970e31ac4ae25d8ff8033e2e1a9603b689"
+    },
+    {
+      "path": "tradepilot-backend/src/routes/strategyRoutes.ts",
+      "bytes": 3135,
+      "sha256": "0a13327acfa17ac79c6042dc39ea20ef111523a9825da887639dee48cacf7cd4"
+    },
+    {
+      "path": "tradepilot-backend/src/routes/tradeRoutes.ts",
+      "bytes": 1452,
+      "sha256": "a5a76b683e93c9ca075162b88cd0f533afe00a52d9db3f88275321528a81ee57"
+    },
+    {
+      "path": "tradepilot-backend/src/routes/userRoutes.ts",
+      "bytes": 549,
+      "sha256": "d54b8347a481855f896eeb7ed9bbe1448cfeee7b0a507353c4cde8867a41331d"
+    },
+    {
+      "path": "tradepilot-backend/src/schemas/accountSchemas.ts",
+      "bytes": 996,
+      "sha256": "b0dd67836f3963eee6d8ce4fba04c71d930b07e13738be678ad46a09d8de34bd"
+    },
+    {
+      "path": "tradepilot-backend/src/schemas/authSchemas.ts",
+      "bytes": 515,
+      "sha256": "e828a24fa4e8a342eec70ab0bdfe4a4c53f7380f90ccbac0532fdd6f70fa5d89"
+    },
+    {
+      "path": "tradepilot-backend/src/schemas/imageUrl.ts",
+      "bytes": 174,
+      "sha256": "c329de4c21954b7497dd758068e5d2bdd46b21992b0d6a21c214f601ab9a34a8"
+    },
+    {
+      "path": "tradepilot-backend/src/schemas/profileSchemas.ts",
+      "bytes": 268,
+      "sha256": "dcfff7ce0900022a6c74cbad5c081b6756a4311f7cca91351789dac000bb5071"
+    },
+    {
+      "path": "tradepilot-backend/src/schemas/querySchemas.ts",
+      "bytes": 753,
+      "sha256": "59bd352ea22ee76f7c53f5f98d46b76740e0b68d0fd7a7cf6b101172ff9e05a6"
+    },
+    {
+      "path": "tradepilot-backend/src/schemas/tradeSchemas.ts",
+      "bytes": 1232,
+      "sha256": "4e096f5ea08b4f88059de489bf5445ec111032cda295893dd4301baa58b1815b"
+    },
+    {
+      "path": "tradepilot-backend/src/security/cloudinaryProvider.ts",
+      "bytes": 2249,
+      "sha256": "169e96b870bf88d951f55655df2373587c65daf40a0b1c1aad11f3bf86620637"
+    },
+    {
+      "path": "tradepilot-backend/src/security/config.ts",
+      "bytes": 542,
+      "sha256": "1b275b6fd4a9e77e4285ce588fc574fa7ba911466924eaa8c5ed33e294179834"
+    },
+    {
+      "path": "tradepilot-backend/src/security/imageValidation.ts",
+      "bytes": 1351,
+      "sha256": "0ef93ff8773a321981247ae5e5741ebf96923ff10e610b69db83543228aa7cda"
+    },
+    {
+      "path": "tradepilot-backend/src/security/media.ts",
+      "bytes": 455,
+      "sha256": "e336d828e997360a2d1bff06e83ff564c1cace16f1e15342eb6e332d5d94780c"
+    },
+    {
+      "path": "tradepilot-backend/src/security/mediaRoutes.ts",
+      "bytes": 2039,
+      "sha256": "e490efb32c1c87f77f9c977d6ad0dfca5548f22cbb0a8d8c9466deae0c272533"
+    },
+    {
+      "path": "tradepilot-backend/src/security/mediaService.ts",
+      "bytes": 10263,
+      "sha256": "0c1b0cde8ce9227c574c5a4515cced09b7a6286b6d0b555720a250575ecd5916"
+    },
+    {
+      "path": "tradepilot-backend/src/security/recovery.ts",
+      "bytes": 10489,
+      "sha256": "7d168c08062a41bc9bc79c580f3f9b47a17c4557753693030cfac8191f13c86d"
+    },
+    {
+      "path": "tradepilot-backend/src/security/routes.ts",
+      "bytes": 1933,
+      "sha256": "c1a01ae8c4fa596c31c8e22fa67b554faa9afc27d5eb542d643c26dc509de01e"
+    },
+    {
+      "path": "tradepilot-backend/src/security/schemas.ts",
+      "bytes": 443,
+      "sha256": "0e5a04023553990e8ad2730ddaf9622b7c362cf67e04c737f3b51de2a46ce178"
+    },
+    {
+      "path": "tradepilot-backend/src/security/service.ts",
+      "bytes": 10247,
+      "sha256": "3b6ede5a6b6f20187750b2c7a06f247c4af9305b280e47935ddf805de8634309"
+    },
+    {
+      "path": "tradepilot-backend/src/security/stagingGate.ts",
+      "bytes": 1699,
+      "sha256": "0076a81f922c4405c4b86197dc4a38260eadcb50b70b5587d0782a786db14342"
+    },
+    {
+      "path": "tradepilot-backend/src/server.ts",
+      "bytes": 613,
+      "sha256": "e0bc31311fec4ce26ee011daa99f1887945d47f3a30a25d4f0d61aa2c78bb31a"
+    },
+    {
+      "path": "tradepilot-backend/src/services/accountService.ts",
+      "bytes": 6343,
+      "sha256": "8ddffc9c1b60ba2bc5f33342526bbc8c64714e85ff9a70aad60d823716a11e28"
+    },
+    {
+      "path": "tradepilot-backend/src/services/analyticsService.ts",
+      "bytes": 5385,
+      "sha256": "9623ff1f4cb950be9e41dc6415f0d6d473846817f8a89231e8e6b532a115cdd1"
+    },
+    {
+      "path": "tradepilot-backend/src/services/authService.ts",
+      "bytes": 2888,
+      "sha256": "8b37a216bd6ec9902c5209fc6d0b4593e3dfec8be66e82bebd95ffd039390ecf"
+    },
+    {
+      "path": "tradepilot-backend/src/services/metricsService.ts",
+      "bytes": 1938,
+      "sha256": "41f739c92e7d72f49d42e01fbbb9f788917fa374ba15869bbf0f859fb4a232c5"
+    },
+    {
+      "path": "tradepilot-backend/src/services/tradeDeletionService.ts",
+      "bytes": 7084,
+      "sha256": "055d4024aedb1539fd8f9fafe37fb1f8f52dd02f8ebafddb3fb69bfc62c96e18"
+    },
+    {
+      "path": "tradepilot-backend/src/services/tradeService.ts",
+      "bytes": 5930,
+      "sha256": "14d2c805c2aa8915d5752712dba7281ebd89a4375ec35483c3d9f3d6fc650eaf"
+    },
+    {
+      "path": "tradepilot-backend/src/strategies/cursor.ts",
+      "bytes": 975,
+      "sha256": "1df517b4ed8bd6b1a64f444c6b3bc06d3f80bf7876103e71ee5d312bf6c9b18b"
+    },
+    {
+      "path": "tradepilot-backend/src/strategies/schemas.ts",
+      "bytes": 1256,
+      "sha256": "fa61532efd928ddff408ef1351db9d96d3eca91695b1b20821311ad4370f2a3b"
+    },
+    {
+      "path": "tradepilot-backend/src/strategies/service.ts",
+      "bytes": 9969,
+      "sha256": "9605eb2a1e6eeac0208cabd6581544a1a6fb6b67ffc225f2be725a39136a26c6"
+    },
+    {
+      "path": "tradepilot-backend/src/strategyPerformance/metrics.ts",
+      "bytes": 3775,
+      "sha256": "dd3e36cc482005cecfa67d3ff65519788608250c29c6e62f80d11d15da935c64"
+    },
+    {
+      "path": "tradepilot-backend/src/strategyPerformance/routes.ts",
+      "bytes": 1696,
+      "sha256": "798ca4773cf4bb7846b4b433cee3d849d421067880a10a99fdd1d953bf6ef2c3"
+    },
+    {
+      "path": "tradepilot-backend/src/strategyPerformance/schemas.ts",
+      "bytes": 976,
+      "sha256": "9d23d5bf8796937a6451a03ef8d360f8bad0208c01642f3b69820dd239c872ef"
+    },
+    {
+      "path": "tradepilot-backend/src/strategyPerformance/service.ts",
+      "bytes": 10562,
+      "sha256": "6c3c077021faae7767380b5e70706375e2f3f0c01fd865df9a1bc427d7dba38a"
+    },
+    {
+      "path": "tradepilot-backend/src/tradeQuery/cursor.ts",
+      "bytes": 1046,
+      "sha256": "9cf8046f562d2baa5063a21fb6e91dcb21912ab1ba8b82b1600248e9bdedb366"
+    },
+    {
+      "path": "tradepilot-backend/src/tradeQuery/routes.ts",
+      "bytes": 2238,
+      "sha256": "4fd291a7c08145e67a710e37b25a60473ef49fe27bad2f07f13be157efa7bebe"
+    },
+    {
+      "path": "tradepilot-backend/src/tradeQuery/schemas.ts",
+      "bytes": 1842,
+      "sha256": "4122fe3ca7cc0e978661b3db4e5451801afda2958f1301f357c6268b2cc64124"
+    },
+    {
+      "path": "tradepilot-backend/src/tradeQuery/service.ts",
+      "bytes": 8283,
+      "sha256": "198059a0e2ce79ebe62c57a7512c46069b6f01a46aa6cdc47aecd851ee462da0"
+    },
+    {
+      "path": "tradepilot-backend/src/types/dto.ts",
+      "bytes": 882,
+      "sha256": "155ad1c919c02aa79fd453aec57a5e5d696ef02e093e9a79e1056379ee1370dd"
+    },
+    {
+      "path": "tradepilot-backend/src/types/express.d.ts",
+      "bytes": 302,
+      "sha256": "d8f3023839038cd3c1976d69652eaa6739e26439f81260e8cbb2dd83a42eb8ff"
+    },
+    {
+      "path": "tradepilot-backend/src/utils/AppError.ts",
+      "bytes": 225,
+      "sha256": "d09320656ec0f05ee71a51fbd4772cb9d0b3d1feed6dd61801fb13091465049e"
+    },
+    {
+      "path": "tradepilot-backend/src/utils/calculateRR.ts",
+      "bytes": 1306,
+      "sha256": "6c3437296e0eec82943cc27e0fd15daa9e8e2e17d38aca0914956794614f0891"
+    },
+    {
+      "path": "tradepilot-backend/src/utils/schemaCompatibility.ts",
+      "bytes": 3654,
+      "sha256": "17cbd6a1ac13fccf020384791700a1d8e9dc618b41b915248f9180a178db2f5f"
+    },
+    {
+      "path": "tradepilot-backend/src/utils/withUserLock.ts",
+      "bytes": 639,
+      "sha256": "debeedb1c6a294b0f0cc5c04bb44033d31df0cbffb6062c42673d409eaa7d562"
+    },
+    {
+      "path": "tradepilot-backend/src/workspace/routes.ts",
+      "bytes": 8519,
+      "sha256": "588b86eba0e9653835d9f400231df43d5d783d63703ee29b26b69384dc6d9865"
+    },
+    {
+      "path": "tradepilot-backend/tsconfig.json",
+      "bytes": 397,
+      "sha256": "3ab576de89253b28a7b67039c98f9b58c5f547d156ab6a372a280fdf3e11447c"
+    },
+    {
+      "path": "tradepilot-frontend/.env.example",
+      "bytes": 152,
+      "sha256": "317a0ed9eb023d3ee7de70d691602212e8952c562634aa1d4ee6afe06a9c9998"
+    },
+    {
+      "path": "tradepilot-frontend/.oxlintrc.json",
+      "bytes": 245,
+      "sha256": "b4d344818a1e1bf43997e4744a9153c8eef770c98b58229cd86363dabb85ded4"
+    },
+    {
+      "path": "tradepilot-frontend/index.html",
+      "bytes": 1015,
+      "sha256": "1f4d4211f8257ccd110da091c863a3bfd782f877d2b6e910ecc31aa53ad51a3e"
+    },
+    {
+      "path": "tradepilot-frontend/package-lock.json",
+      "bytes": 91456,
+      "sha256": "5ab2eb943465083ebc5dc63b407b9568c6e55bda5adf8c9e060f8595b1cbe139"
+    },
+    {
+      "path": "tradepilot-frontend/package.json",
+      "bytes": 989,
+      "sha256": "fbdbd5295fc83b49c323a3502954f6de842bdcdf316e612ef619afcc1e207fcf"
+    },
+    {
+      "path": "tradepilot-frontend/public/favicon.svg",
+      "bytes": 9522,
+      "sha256": "61bc9a161de58248288e6905425d7180f0624c2865007b97d763fdac12043a66"
+    },
+    {
+      "path": "tradepilot-frontend/public/icons.svg",
+      "bytes": 5031,
+      "sha256": "b45fa506195cfcdef406ba9f0c77b36ddc1a7c224040926ec70abc2fdea7b93a"
+    },
+    {
+      "path": "tradepilot-frontend/public/workspace-preview.png",
+      "bytes": 405439,
+      "sha256": "58e2ae3ca8d9b30c4413d536240dc602624aad2887b388cdcef1d88093a68108"
+    },
+    {
+      "path": "tradepilot-frontend/src/App.tsx",
+      "bytes": 947,
+      "sha256": "22582d16d5111d71f57111513218319ec868bc97c76d84141064fb2390c8ad01"
+    },
+    {
+      "path": "tradepilot-frontend/src/api/apiClient.ts",
+      "bytes": 1021,
+      "sha256": "cac14fcb007aef864f84bf6f5bf2d7e40ca3b6c04dbebdb2bb099e35ef99e5bd"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/AccountAvatar.tsx",
+      "bytes": 1982,
+      "sha256": "49ddab628bafd7afe30605917d323a9dc009ca4a647b7e16e6fe291be9f39a96"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/AccountForm.tsx",
+      "bytes": 8785,
+      "sha256": "deeafaefa8c804e7f2a8c349e009543035eaaa05d215c4d7f0af6d91a7620b2e"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/AccountScope.tsx",
+      "bytes": 875,
+      "sha256": "b15d6682a94cf8d0af669214c2d518495fd8240cd21ea26ab9c92ecce358c1af"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/AdvancedTradeList.tsx",
+      "bytes": 10934,
+      "sha256": "689f3971de48c28f7a7368c77215ce449c706915b484368e554667d349213b87"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/AuthShell.tsx",
+      "bytes": 755,
+      "sha256": "a909d160531a096c67474e866086c16de9fcbb95250ae578581e289100712967"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/BrokerLogo.tsx",
+      "bytes": 1141,
+      "sha256": "d7e1f2662e6f4f177be9c97eba981494f03f825d8bae37bd4abb3f7209497215"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/BrokerSelect.tsx",
+      "bytes": 2979,
+      "sha256": "605c6b798a7cd274964abdd762aa9a391da542a84f060ea30c27d18f08ec8f16"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/CalendarPopoverRow.tsx",
+      "bytes": 3217,
+      "sha256": "6ee782eff24fcd470e5391e6b1c91b4441a70b95710a51df1c8291dc3ebdf576"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/CalendarView.tsx",
+      "bytes": 9963,
+      "sha256": "694bc9ae5703a3190de8597d3bdfc683f17949a2e886f51f6108c78993d98491"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/DayPopover.tsx",
+      "bytes": 3233,
+      "sha256": "cbc476c1aed64a73b815e757bd6c8a07190934026f63abe6fb0ef520c944e3c9"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/DenominationForm.tsx",
+      "bytes": 3729,
+      "sha256": "d5a5148fb127eda5e8dde4bdeaa7d6956ba263e37421b4716c7665272d062ac7"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/FinancialFields.tsx",
+      "bytes": 4775,
+      "sha256": "364ddf43c0841dfc40592ac4913680f5463ad3b1ae1eea8eb41dc5e1774813ba"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/FormField.tsx",
+      "bytes": 618,
+      "sha256": "0293635e329fb973adfa4498325cd28db8cbfdcec1f02a074f20a064c8eba178"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/JournalTable.tsx",
+      "bytes": 2131,
+      "sha256": "a995cfbb59be75824c58dcb6abca1c76b542bcfb3ba556444c46aca6e2c42c0b"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/LocalNoteImport.tsx",
+      "bytes": 3672,
+      "sha256": "3e6afb40fbdfea33ed04fa191239ac4025206004b2f7d204bf7516ef6d5ac3b1"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/MetricCard.tsx",
+      "bytes": 1070,
+      "sha256": "cee690766f6c59b1ef7239ebddbaa38555de6ad73a036efca868ecee18b8d867"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/Navbar.tsx",
+      "bytes": 3557,
+      "sha256": "ed2c82a46db82db3639a25fbdf6f01799a05a193313f51ad69b1353aeec204e7"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/OwnedImage.tsx",
+      "bytes": 1226,
+      "sha256": "98993633fdb425daffbe4e35026bb2b86f7aab7cde2c7d135f7b59007f63cf44"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/OwnedMedia.tsx",
+      "bytes": 5366,
+      "sha256": "7e133532fb1988c0be98ec069068a27e6798f9bb4811f0a1c9bc96ac82fef476"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/PerformanceEditor.tsx",
+      "bytes": 17348,
+      "sha256": "b851034f50aa7ed10b936b86f937a6b0469910718835e2ff0543018cb815b1e7"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/PerformanceView.tsx",
+      "bytes": 1698,
+      "sha256": "b47affd1bab6160f43bb342c445f896feeef068bef0cdfc235d4963103df8c9d"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/ProfileAvatar.tsx",
+      "bytes": 1232,
+      "sha256": "c5439bbb3581948d85c846313898ba5c7d1bb9cf758aa2482cfa1e8a2b8bda91"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/RealizedCurve.tsx",
+      "bytes": 1862,
+      "sha256": "41720123f714303c44a95cdc8c74ec3376f86f370ba3a6f0dc4630fb5cdfbbbf"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/RealizedPanel.tsx",
+      "bytes": 6113,
+      "sha256": "7a6db52cb5f9e87f459339c12a31ad5ee742d343204409c120f99db4fa9b545c"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/RedesignUI.tsx",
+      "bytes": 6990,
+      "sha256": "2c44cf12b01bafe61ee68255cc648320c7a09957069beebe26f0739208731614"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/SecuritySettings.tsx",
+      "bytes": 5985,
+      "sha256": "5cd3e56666a9eefc88c0ae6faa8b4e0bb011ae8a13dbee74213062954b6ba1bb"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/ServerDayNotes.tsx",
+      "bytes": 2883,
+      "sha256": "2800b74db1acf564ffc9cd1429724b02cc51ea5e431de51cbb204ffbffe24e9b"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/Sidebar.tsx",
+      "bytes": 2102,
+      "sha256": "a78563d342ec5e52ec7769822def9b11457a67b76c9517139927225fea4bf5ac"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/StableAsyncContent.tsx",
+      "bytes": 967,
+      "sha256": "cb2045ce81e3f70eb9d3bb3f62f581e1abb93f8551d11524deeb7f15b36f9e2a"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/StrategyTradeList.tsx",
+      "bytes": 277,
+      "sha256": "88b0c70701c37fb34db8671a24d2ffd59543229a1e4a20f375f7551793ce5a20"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/TradeChecklist.tsx",
+      "bytes": 8529,
+      "sha256": "d1d4da16e140be33a4513ae3e3f283396b831590538c99110087594960e82a4f"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/TradeDayDrawer.tsx",
+      "bytes": 8043,
+      "sha256": "24544eeaba6a1acaa767bd45c9519c40ebd9b0605e2bcc305e06fefac10f883f"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/TradeDeletionDialog.tsx",
+      "bytes": 5296,
+      "sha256": "85564d235ba3d2b8374af588dbc6c88f8ad6bebee84682fc97f0c8d7bf8dacc0"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/TradeDetailModal.tsx",
+      "bytes": 5880,
+      "sha256": "f37d6790e399b34016e5e55d0e148613a8db997010c0a87b479856ff4d96f51b"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/TradeForm.tsx",
+      "bytes": 10089,
+      "sha256": "c0b506d9a606ce882fc109731593e7733656e8a6a76b08af97f431c30e68df93"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/TradeListView.tsx",
+      "bytes": 4442,
+      "sha256": "bfeb0ec3b87bd8b2a7d00e9d5a725cb8e0f3cbc4e97385f4f9a065293320e387"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/TradeStrategy.tsx",
+      "bytes": 10149,
+      "sha256": "293714dd6cbb79c09282510407b7b0f7c51d49e2cccb2500e0d70757fa898cd5"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/WidgetCatalog.tsx",
+      "bytes": 1786,
+      "sha256": "baaeab69de9e9fd3de7e7ed2b21dc5bd61b1cd42fa79f5618d3ce76fdc42f31d"
+    },
+    {
+      "path": "tradepilot-frontend/src/components/WorkspaceUI.tsx",
+      "bytes": 3082,
+      "sha256": "4e8ea72036d564ee79873fac404beb91d06ffa65e6eb845ff39318ba973f58ed"
+    },
+    {
+      "path": "tradepilot-frontend/src/constants/brokers.ts",
+      "bytes": 1432,
+      "sha256": "1dd13caa5e2cae6183cf628dc797946770c0d953891cd28a655bab563521399d"
+    },
+    {
+      "path": "tradepilot-frontend/src/constants/navigation.ts",
+      "bytes": 727,
+      "sha256": "3a32de5993622692b89ba9291e1f5ac84687ecf6e998308d41a5862b436f1c55"
+    },
+    {
+      "path": "tradepilot-frontend/src/context/AccountContext.tsx",
+      "bytes": 6270,
+      "sha256": "2f02952ea87d6963ffc8a21aa60fcfb6b6afae45ae159afe741f9fc9793b77e5"
+    },
+    {
+      "path": "tradepilot-frontend/src/context/AuthContext.tsx",
+      "bytes": 4228,
+      "sha256": "ada6bada60b4da1c579dd899638b8241201c71562383d7ba723f6f2928684a97"
+    },
+    {
+      "path": "tradepilot-frontend/src/context/TradeContext.tsx",
+      "bytes": 5615,
+      "sha256": "2e19f4faab41c8b9a8a002cf7b0800e15466c9acc089ede10aea32866a6c1879"
+    },
+    {
+      "path": "tradepilot-frontend/src/context/WorkspaceContext.tsx",
+      "bytes": 4427,
+      "sha256": "c453cc9a0797fa2b45b7bbd7acc4f9eff1f69527114edf1fc638a03315eaa90e"
+    },
+    {
+      "path": "tradepilot-frontend/src/hooks/useAccountResource.ts",
+      "bytes": 1232,
+      "sha256": "191c6a2c6217316a98ed3ec999303118fb257e2dc6d8ce57f35be9c15fc1817c"
+    },
+    {
+      "path": "tradepilot-frontend/src/hooks/useAccounts.ts",
+      "bytes": 148,
+      "sha256": "42e4f2e48faf8f177da123160247a71315093f4a8bbc9d752ea3af248c5a4c06"
+    },
+    {
+      "path": "tradepilot-frontend/src/hooks/useAuth.ts",
+      "bytes": 269,
+      "sha256": "2cbce609a6ff98106c59035111ec9b1c05772be1c2abfb313631dd9f2108ad40"
+    },
+    {
+      "path": "tradepilot-frontend/src/hooks/useFinancial.ts",
+      "bytes": 2197,
+      "sha256": "44e1b854fbd2f1ac500c42b876a4672c1d1ce3de610365776a57669920a46675"
+    },
+    {
+      "path": "tradepilot-frontend/src/hooks/useGameplanCapability.ts",
+      "bytes": 858,
+      "sha256": "f407bdf8cae82a48d9e86031f558343ac056222e432bdf0853f4e3d77e587c33"
+    },
+    {
+      "path": "tradepilot-frontend/src/hooks/useNotesCapability.ts",
+      "bytes": 922,
+      "sha256": "0820dafae3b9684306c9d35f6d6fa2431dfc4a7fa8030e19cd57678ccd382c25"
+    },
+    {
+      "path": "tradepilot-frontend/src/hooks/useStrategyCapability.ts",
+      "bytes": 867,
+      "sha256": "a183079a72b6c66a4bc20ef7a50e26eab4b7c3b4821d361e000d62b4179b9112"
+    },
+    {
+      "path": "tradepilot-frontend/src/hooks/useTradePerformance.ts",
+      "bytes": 1580,
+      "sha256": "f7ac914c51598bf42c6897e4ff020de3b55069f6c49170facfbff5565a42b826"
+    },
+    {
+      "path": "tradepilot-frontend/src/hooks/useWorkspaceReport.ts",
+      "bytes": 2309,
+      "sha256": "49675a0e75f9d2d36667c60c81ebc56ac98c720a0c48cbc4e1fa064804d911e8"
+    },
+    {
+      "path": "tradepilot-frontend/src/index.css",
+      "bytes": 26439,
+      "sha256": "57cf737054dadbf09520ef1d322b4983b608b1ca18984dfff1868687c2aaf30a"
+    },
+    {
+      "path": "tradepilot-frontend/src/layouts/DashboardLayout.tsx",
+      "bytes": 2308,
+      "sha256": "f1157c59a85ee62edf42a74171b9e56d601146abac37ed44f2e2054081e8760b"
+    },
+    {
+      "path": "tradepilot-frontend/src/main.tsx",
+      "bytes": 289,
+      "sha256": "a1c45d06a84b45e12f0fe838beb838910a8be0aa9280fa07f924edc36bbf327c"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/AccountWorkspace.tsx",
+      "bytes": 6904,
+      "sha256": "2052123bb2de5e6d3f070ebdc6af284ae948ecad01c808ec06281dfb16615b3d"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/Accounts.tsx",
+      "bytes": 16379,
+      "sha256": "bb8a19cf42e681ed783931dea1260447452f6609fab1b9aa1a9e36fd18c358b5"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/AddTrade.tsx",
+      "bytes": 5439,
+      "sha256": "bed5c28a04b0c7df4b7b2ddda29e4afa3d2fc785a5488f3766b8a9043b29616b"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/Analytics.tsx",
+      "bytes": 6209,
+      "sha256": "a986ed88f2264ddd4f75b1bd3ee7b89b93555dd16a6326d9666c58cbdd4a2f0b"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/AppearanceSettings.tsx",
+      "bytes": 10188,
+      "sha256": "a97196537633b36a32ceb83d7e8e20752d9be873e6240124af627a159c8928b3"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/Calendar.tsx",
+      "bytes": 4377,
+      "sha256": "971fc7452dd8e98fd09c79805d7e8f29706006eb4b9321a8fb5ca9b9e2a0f6c9"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/Dashboard.tsx",
+      "bytes": 20521,
+      "sha256": "8a1f86b0ed4c034af3af707d370ca08e250711c32121de6887fc945d12970ca1"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/EditTrade.tsx",
+      "bytes": 7345,
+      "sha256": "34175c1ada70b366c777d838103e0d6411568bef952b522f3ba4836724febef5"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/Gameplans.tsx",
+      "bytes": 12200,
+      "sha256": "6a4899bed8dd01bca5aa7b847fb98d03d8b6d822fc94245312a2027b57f187e7"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/Landing.tsx",
+      "bytes": 2567,
+      "sha256": "ebdb71ef3087b172eada822d44996cbc9cece32e74ff9a0532c55b2e80482785"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/Login.tsx",
+      "bytes": 3415,
+      "sha256": "b8f9d186261542f1342feca9b6995dddef5ec8d48f356093601cc42bf5811dfe"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/Notes.tsx",
+      "bytes": 21356,
+      "sha256": "984bc77b7c6526d7885b940b4a5d78886a2e528a63b895d06d41ee758e490470"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/NotesWorkspace.tsx",
+      "bytes": 17793,
+      "sha256": "a61942f336175114bdad1bd49218ccb06adc9e34da7bcba76180183a470d9865"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/Onboarding.tsx",
+      "bytes": 3615,
+      "sha256": "4756243d1444509aadf0abf18b1e9b054792b9a01025766b5aed78be9ae10989"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/OverviewAnalytics.tsx",
+      "bytes": 4027,
+      "sha256": "1ef1b3fd074b29dc34bd3e2b7a2f29c4ae4dfc5da2e04ba17a5d0eaafeda2f9c"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/OverviewDashboard.tsx",
+      "bytes": 4003,
+      "sha256": "fc5d2cc861ee5383d385b6f2e49088c8dd6da7c02db8c028c29759ee637c9e08"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/PasswordRecovery.tsx",
+      "bytes": 4162,
+      "sha256": "e9a355f2bdd4d4c088e2219c4b159cb53654aa183a99566c16bb987b6a4e784b"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/PlanningWorkspace.tsx",
+      "bytes": 12247,
+      "sha256": "693c1614820cb18215ec5ca7f074cc7d57b0010778af6e77654efb559a76a1b7"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/Register.tsx",
+      "bytes": 3942,
+      "sha256": "e74b733651bcfcc4e7c1a49827007b44239262fe168f62037c72f21e41157cd2"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/Settings.tsx",
+      "bytes": 6712,
+      "sha256": "3587b41c1ac720c0572d813772460c461a3d3dff65e405a8bae786e6f2954d8f"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/Strategies.tsx",
+      "bytes": 10858,
+      "sha256": "669d0d2490584c5abd2376018f428d33d07cbbae8995335ab2698d5cf1d833af"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/StrategyLibrary.tsx",
+      "bytes": 12900,
+      "sha256": "83c61f12b66b5b8649e5df96f53c3d6b861cde88f00ade529375e293829d37f7"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/StrategyPerformance.tsx",
+      "bytes": 14548,
+      "sha256": "64659558356f86bf39a9368080411296c2fd475c42021444c47d365fd56aabfd"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/TradeDetails.tsx",
+      "bytes": 7427,
+      "sha256": "d666ab124208ed10eb386f73c6b6e3d45da64c07b488360ec302d94f313fd036"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/TradeEntry.tsx",
+      "bytes": 19712,
+      "sha256": "8808724fa2d8f5004101e9c6dea3d7bcbade39c76b3cd1e9b1748089e9df6ea6"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/TradeJournal.tsx",
+      "bytes": 12815,
+      "sha256": "8927e246dff1e1a1493939fd8cfc1a27ac8137364806fc590900f019cd6621d0"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/Trades.tsx",
+      "bytes": 10376,
+      "sha256": "f0506b487c5700d717fe89b66ce054c605228788b5ca86bfe5b22ca6e2582d98"
+    },
+    {
+      "path": "tradepilot-frontend/src/pages/TradingCalendar.tsx",
+      "bytes": 6806,
+      "sha256": "bdd9358a9a8311a6ed51b8194e1693483bfab71b6a8a0d91369c61fc00f4b8e2"
+    },
+    {
+      "path": "tradepilot-frontend/src/premium.css",
+      "bytes": 38051,
+      "sha256": "41e0885fb31eec5bf224cf72f7d95feccb0096f5deedf0d4e29c67b3fc429a5e"
+    },
+    {
+      "path": "tradepilot-frontend/src/redesign.css",
+      "bytes": 37002,
+      "sha256": "fcbb84f7af5f7aa43dfd933b5c0f20e1f9af42af236cfed4e7a0ff94f4589f0c"
+    },
+    {
+      "path": "tradepilot-frontend/src/routes/AppRoutes.tsx",
+      "bytes": 2864,
+      "sha256": "d8f548b700ee97f8768d8f0f5367cffd33dbd10847d213272f545606a2871c25"
+    },
+    {
+      "path": "tradepilot-frontend/src/routes/ProtectedRoute.tsx",
+      "bytes": 857,
+      "sha256": "d4770a3a9eaba19a103f33955251f2a08a39f5ba6fdc2c41d998669c7f005dd1"
+    },
+    {
+      "path": "tradepilot-frontend/src/services/accountService.ts",
+      "bytes": 1248,
+      "sha256": "c924db62bf367c77b58baacc769a8713d1a6c8beb9c7c5a0ab4d6d18a62f9684"
+    },
+    {
+      "path": "tradepilot-frontend/src/services/analyticsService.ts",
+      "bytes": 328,
+      "sha256": "5055fb0813dd1e36bea90ee615a6ee0aabb8ae26dfa6ae1fbecb5412df16528f"
+    },
+    {
+      "path": "tradepilot-frontend/src/services/authService.ts",
+      "bytes": 1114,
+      "sha256": "047c26c3dc578a436b29d74c433dfe7cce2e81bfce7489dd4b9d4dc41923d3c6"
+    },
+    {
+      "path": "tradepilot-frontend/src/services/calendarService.ts",
+      "bytes": 546,
+      "sha256": "5772dabdaea5dea32bfcd8faa0f4434800b6279107d7965f81e24dab205bb00d"
+    },
+    {
+      "path": "tradepilot-frontend/src/services/dashboardService.ts",
+      "bytes": 328,
+      "sha256": "d314e8ced459d73cab8e9148f02d633b6b35efd667dadaedfa6968577bcf3ded"
+    },
+    {
+      "path": "tradepilot-frontend/src/services/financialService.ts",
+      "bytes": 4844,
+      "sha256": "924f2ac07aab971c4d2082b9cf14626c808da6ffd8789d63f34a033b37efe3e8"
+    },
+    {
+      "path": "tradepilot-frontend/src/services/gameplanService.ts",
+      "bytes": 2677,
+      "sha256": "c0d31d2658103fb1a6ff9b6d468e64003cc6403dfce4318bbdb4fa2a97bbe20a"
+    },
+    {
+      "path": "tradepilot-frontend/src/services/notesService.ts",
+      "bytes": 2974,
+      "sha256": "27097342dff81fbc0eea451787c817011373134b5809ba42798f480150044fe0"
+    },
+    {
+      "path": "tradepilot-frontend/src/services/ownedMediaService.ts",
+      "bytes": 1105,
+      "sha256": "564a26c53e2d44eac1046b8c5cc42fda7706aff63011a7c5bffdd13b00078e63"
+    },
+    {
+      "path": "tradepilot-frontend/src/services/strategyPerformanceService.ts",
+      "bytes": 2542,
+      "sha256": "6d6053f443e2b8707650238178b507de02794bb3d1a69b1946df1f857d073726"
+    },
+    {
+      "path": "tradepilot-frontend/src/services/strategyService.ts",
+      "bytes": 3028,
+      "sha256": "7dbdf4bf9d7a94e7a64dcc087811644043d35243cebb4980eb61c2c833069528"
+    },
+    {
+      "path": "tradepilot-frontend/src/services/tradeQueryService.ts",
+      "bytes": 1595,
+      "sha256": "98e94a6a9392e4933aee0f20a4470e7f25f6fcbc6365f54cf13ba52856e52b1c"
+    },
+    {
+      "path": "tradepilot-frontend/src/services/tradeService.ts",
+      "bytes": 1153,
+      "sha256": "82929ffc0ff625364702c9e32cebda600aa514ca867319ee11d288c0d033cf13"
+    },
+    {
+      "path": "tradepilot-frontend/src/services/uploadService.ts",
+      "bytes": 424,
+      "sha256": "7cc26ff2a38f19b49ed80d4bb1db088d3e2f84c4128ca39b8249204f297574d4"
+    },
+    {
+      "path": "tradepilot-frontend/src/types/account.ts",
+      "bytes": 830,
+      "sha256": "b0cea0d5f9f8b8baf9dab563697c8b81cca46c901134715a8244a66ee805f4aa"
+    },
+    {
+      "path": "tradepilot-frontend/src/types/analytics.ts",
+      "bytes": 579,
+      "sha256": "b34c9ab85a0c8b6c1a0b367548fb218634c0c9f8deda8c499b44f38d6778dbaa"
+    },
+    {
+      "path": "tradepilot-frontend/src/types/auth.ts",
+      "bytes": 165,
+      "sha256": "0e317286b62dd97f7a25268e5bf1f4cf5efcf9b745da0b8949052ed3cb456ba1"
+    },
+    {
+      "path": "tradepilot-frontend/src/types/dashboard.ts",
+      "bytes": 159,
+      "sha256": "8c8f249350c2603c137170e317b644f74adc4b741e1437e2dc6a02c37be4a1c7"
+    },
+    {
+      "path": "tradepilot-frontend/src/types/financial.ts",
+      "bytes": 4737,
+      "sha256": "7f42dc7c8dcdb8f8a9d0806e5848382afea9ff997fe93640c4ec5300d4d0d894"
+    },
+    {
+      "path": "tradepilot-frontend/src/types/trade.ts",
+      "bytes": 910,
+      "sha256": "3bd5f83b7cf76181b19f11f112c50b3a047aeb619431320ca02853258d3bec88"
+    },
+    {
+      "path": "tradepilot-frontend/src/utils/apiError.d.mts",
+      "bytes": 74,
+      "sha256": "1abaf42fee2b79895412cad0c7e45c5b36bd7663ba2f65dfdd51113c1ad1a706"
+    },
+    {
+      "path": "tradepilot-frontend/src/utils/apiError.mjs",
+      "bytes": 483,
+      "sha256": "c857b00785420d8825a77cc3466c9ca55ef125dc1fc411c42d87b06b94caae28"
+    },
+    {
+      "path": "tradepilot-frontend/src/utils/csvExport.ts",
+      "bytes": 1866,
+      "sha256": "7071b87314a791ebf95b58c061364953c6413b3b36b306536135068e59f2c594"
+    },
+    {
+      "path": "tradepilot-frontend/src/utils/dashboardLayout.ts",
+      "bytes": 4385,
+      "sha256": "e2f20fc8c00cdbc090ac24db2c9e1fa9a7d4bf1e8bf367760e2048edf2cbaa96"
+    },
+    {
+      "path": "tradepilot-frontend/src/utils/decimal.ts",
+      "bytes": 4242,
+      "sha256": "9c3a1ef5b95ce059fdf5824485f42934568cf44da953df84c8008837e384246e"
+    },
+    {
+      "path": "tradepilot-frontend/src/utils/display.ts",
+      "bytes": 698,
+      "sha256": "98f21103262cdd9e10e8fd8f0e31642a77f695a91bfd61b7baa32586ab507fa0"
+    },
+    {
+      "path": "tradepilot-frontend/src/utils/tradePerformance.ts",
+      "bytes": 410,
+      "sha256": "2a22d87ae05a6fc0096d9d1a20ed92e4b90575700a2abc3c6f3d60f67a3f0987"
+    },
+    {
+      "path": "tradepilot-frontend/src/vite-env.d.ts",
+      "bytes": 250,
+      "sha256": "59642bbd48866d011c9a64ecc724ad3f1f5e4e0a08adbdf16faaa7e4c18db692"
+    },
+    {
+      "path": "tradepilot-frontend/tsconfig.app.json",
+      "bytes": 655,
+      "sha256": "8e5d12ba330e7d86409edec74b95451e0db22ee09b9426c94b5bf817571eddb0"
+    },
+    {
+      "path": "tradepilot-frontend/tsconfig.json",
+      "bytes": 119,
+      "sha256": "770b4140bbb581e2dfd9ea9946ffc9c75a1d86ba7d2db5f77c83e37cbdf9d808"
+    },
+    {
+      "path": "tradepilot-frontend/tsconfig.node.json",
+      "bytes": 558,
+      "sha256": "d366cc0827139db39c61815f22491bbfda56c654354a42ad7795143d314e45e8"
+    },
+    {
+      "path": "tradepilot-frontend/vercel.json",
+      "bytes": 263,
+      "sha256": "cceb2af4b0bcd17e7f23162b9547e2f577aa1d32f56b69d84604da676d147e87"
+    },
+    {
+      "path": "tradepilot-frontend/vite.config.ts",
+      "bytes": 220,
+      "sha256": "0c03207436c9eb3f2f35ec9ff13d17c6ae7e4c8d46ad394a556578cf12c80d74"
+    }
+  ]
+}

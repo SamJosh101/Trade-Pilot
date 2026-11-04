@@ -1,4 +1,5 @@
 import strategyPerformanceRoutes from '../strategyPerformance/routes';
+import workspaceRoutes from '../workspace/routes';
 import securityRoutes from '../security/routes';
 import mediaRoutes from '../security/mediaRoutes';
 import tradeQueryRoutes from '../tradeQuery/routes';
@@ -15,6 +16,7 @@ import accountRoutes from "./accountRoutes";
 import {notesRouter,foldersRouter} from './notesRoutes';
 
 const router = Router();
+router.use('/workspace',workspaceRoutes);
 
 router.use("/v1.1",financialRoutes);
 router.use("/auth", authRoutes);

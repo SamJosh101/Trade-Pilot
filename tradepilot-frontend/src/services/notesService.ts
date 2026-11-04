@@ -4,7 +4,7 @@ export type NoteInput={title:string;body:string;folderId:string|null;accountId:s
 export type Note=NoteInput&{id:string;revision:number;createdAt:string;updatedAt:string};
 export type NoteSummary=Omit<Note,'body'>&{excerpt:string};
 export type Folder={id:string;name:string;revision:number;createdAt:string;updatedAt:string;_count:{notes:number}};
-export type NoteQuery={q?:string;accountId?:string;tradeId?:string;folderId?:string;dayDate?:string;sort?:string;cursor?:string;limit?:number};
+export type NoteQuery={q?:string;accountId?:string;tradeId?:string;strategyId?:string;folderId?:string;dayDate?:string;sort?:string;cursor?:string;limit?:number};
 export type Page<T>={items:T[];nextCursor:string|null};
 export const capabilities=async(signal?:AbortSignal)=>(await api.get<{protocol:'notes-v1';available:boolean;localNotesPreserved:boolean}>('/notes/capabilities',{signal})).data;
 export const list=async(query:NoteQuery,signal?:AbortSignal)=>(await api.get<Page<NoteSummary>>('/notes',{params:query,signal})).data;

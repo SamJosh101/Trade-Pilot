@@ -1,4 +1,3 @@
-import OwnedMedia from '../components/OwnedMedia';
 import SecuritySettings from '../components/SecuritySettings';
 import { useEffect, useState } from 'react';
 
@@ -44,7 +43,7 @@ export default function Settings() {
 
     <div className="settings-layout"><div className="settings-content">{tab === 'Profile' && <>
 
-        <h2>Profile</h2><OwnedMedia target="profile" />
+        <h2>Profile</h2>
 
         <p className="muted section-gap">Your name and email for this workspace.</p>
 

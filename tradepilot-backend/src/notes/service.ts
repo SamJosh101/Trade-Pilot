@@ -49,12 +49,19 @@ function decodeCursor(cursor:string|undefined,scope:string):{id:string;value:str
  try{const [data,mac,...extra]=cursor.split('.');if(extra.length||!data||!mac)throw Error();const expected=signature(data);if(mac.length!==expected.length||!timingSafeEqual(Buffer.from(mac),Buffer.from(expected)))throw Error();const p=JSON.parse(Buffer.from(data,'base64url').toString());if(p.v!==1||p.scope!==scope||typeof p.id!=='string'||typeof p.value!=='string')throw Error();return p;}catch{throw new NotesError('INVALID_CURSOR','The list changed or the cursor does not belong to this query. Refresh the list.',400);}
 }
 export async function listNotes(userId:string,query:NoteQuery){
+ let strategyNoteIds:string[]|undefined;
+ if(query.strategyId){
+  if(!await prisma.strategy.findFirst({where:{id:query.strategyId,userId},select:{id:true}}))throw new NotesError('NOT_FOUND','Strategy not found',404);
+  const ready=(await prisma.$queryRaw<Array<{ready:boolean}>>`SELECT to_regclass('public."WorkspaceEntry"') IS NOT NULL AS ready`)[0]?.ready;
+  if(!ready)throw new NotesError('WORKSPACE_UNAVAILABLE','Strategy note links require workspace storage',503);
+  strategyNoteIds=(await prisma.$queryRaw<Array<{key:string}>>`SELECT key FROM "WorkspaceEntry" WHERE "userId"=${userId} AND key LIKE 'note:%' AND value->>'strategyId'=${query.strategyId}`).map(r=>r.key.slice(5));
+ }
  if(query.accountId&&!await prisma.tradingAccount.findFirst({where:{id:query.accountId,userId},select:{id:true}}))throw new NotesError('NOT_FOUND','Account not found',404);
  if(query.folderId&&query.folderId!=='unfiled'&&!await prisma.noteFolder.findFirst({where:{id:query.folderId,userId},select:{id:true}}))throw new NotesError('NOT_FOUND','Folder not found',404);
  if(query.tradeId&&!await prisma.trade.findFirst({where:{id:query.tradeId,userId},select:{id:true}}))throw new NotesError('NOT_FOUND','Trade not found',404);
  const {cursor,limit,...filter}=query,scope=JSON.stringify([userId,filter]);const after=decodeCursor(cursor,scope);
  const field=query.sort==='title_asc'?'title':query.sort==='created_desc'?'createdAt':'updatedAt';const direction=query.sort.endsWith('asc')?'asc':'desc';
- const where:Prisma.NoteWhereInput={userId,...(query.accountId?{accountId:query.accountId}:{}),...(query.tradeId?{tradeId:query.tradeId}:{}),...(query.dayDate?{dayDate:query.dayDate}:{}),...(query.folderId?{folderId:query.folderId==='unfiled'?null:query.folderId}:{}),...(query.q?{OR:[{title:{contains:query.q,mode:'insensitive'}},{body:{contains:query.q,mode:'insensitive'}}]}:{})};
+ const where:Prisma.NoteWhereInput={userId,...(strategyNoteIds?{id:{in:strategyNoteIds}}:{}),...(query.accountId?{accountId:query.accountId}:{}),...(query.tradeId?{tradeId:query.tradeId}:{}),...(query.dayDate?{dayDate:query.dayDate}:{}),...(query.folderId?{folderId:query.folderId==='unfiled'?null:query.folderId}:{}),...(query.q?{OR:[{title:{contains:query.q,mode:'insensitive'}},{body:{contains:query.q,mode:'insensitive'}}]}:{})};
  if(after){const value=field==='title'?after.value:new Date(after.value);if(value instanceof Date&&!Number.isFinite(value.getTime()))throw new NotesError('INVALID_CURSOR','Invalid list cursor');where.AND=[{OR:[{[field]:{[direction==='asc'?'gt':'lt']:value}},{[field]:value,id:{[direction==='asc'?'gt':'lt']:after.id}}]}];}
  const rows=await prisma.note.findMany({where,orderBy:[{[field]:direction},{id:direction}],take:limit+1,select:projection});const hasMore=rows.length>limit;const items=rows.slice(0,limit),last=items[items.length-1];
  return {items:items.map(n=>{const {body,...summary}=publicNote(n);return {...summary,excerpt:body.slice(0,200)};}),nextCursor:hasMore&&last?encodeCursor(scope,last.id,field==='title'?last.title:last[field].toISOString()):null};

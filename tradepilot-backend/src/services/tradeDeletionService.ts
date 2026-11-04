@@ -25,8 +25,8 @@ async function impact(tx:Prisma.TransactionClient,userId:string,id:string){
  const strategy=hasStrategies?await tx.tradeStrategyAssignment.findFirst({where:{tradeId:id,userId,endedAt:null},select:{id:true,strategyId:true,strategyRevision:true,strategyName:true,assignedAt:true}}):null;
  const counts={strategyAssignments,checklists:snapshot?1:0,performance:await tx.tradePerformance.count({where:{tradeId:id}}),executions:await tx.tradeExecution.count({where:{tradeId:id}}),charges:await tx.tradeCharge.count({where:{tradeId:id}}),notes:notes.length};
  const hasMedia=tables.some(t=>t.name==='MediaAsset');
- const mediaCount=hasMedia?(await tx.$queryRaw<Array<{n:number}>>`SELECT count(*)::int n FROM "MediaAsset" WHERE "tradeId"=${id} AND "userId"=${userId}`)[0].n:0;
- return {trade:trade!,notes,snapshot,counts:{...counts,managedImages:mediaCount},hasChecklist,hasStrategies,hasMedia,strategy};
+ const managedImages=hasMedia?(await tx.$queryRaw<Array<{n:number}>>`SELECT count(*)::int n FROM "MediaAsset" WHERE "tradeId"=${id} AND "userId"=${userId}`)[0].n:0;
+ return {trade:trade!,notes,snapshot,counts:{...counts,...(hasMedia?{managedImages}:{})},hasChecklist,hasStrategies,hasMedia,strategy};
 }
 type Impact=Awaited<ReturnType<typeof impact>>;
 const digest=(s:string)=>createHmac('sha256',env.jwtSecret).update(`trade-deletion-v2:${s}`).digest('base64url');

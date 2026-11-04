@@ -1,13 +1,9 @@
 import { Outlet } from 'react-router-dom';
 import { useState, useEffect, Suspense } from 'react';
-import { useAuth } from '../hooks/useAuth';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
-import AccountScope from '../components/AccountScope';
 export default function DashboardLayout() {
-    const [expanded, setExpanded] = useState(false), [mobile, setMobile] = useState(false);
-    const {user}=useAuth();
-    useEffect(()=>{try{document.documentElement.dataset.density=localStorage.getItem(`tradepilot:display:${user?.id}`)==='compact'?'compact':'comfortable';}catch{document.documentElement.dataset.density='comfortable';}},[user?.id]);
+    const [expanded, setExpanded] = useState(true), [mobile, setMobile] = useState(false);
     useEffect(()=>{
       if(!mobile)return;
       const panel=document.querySelector<HTMLElement>('.workspace-sidebar'),body=document.querySelector<HTMLElement>('.workspace-body'),previous=document.activeElement as HTMLElement|null;
@@ -24,7 +20,6 @@ export default function DashboardLayout() {
     <div className="workspace-body">
     <Navbar onMenu={() => setMobile(v => !v)}/>
     <main id="main-content" tabIndex={-1} className="workspace-main">
-    <AccountScope />
     <Suspense fallback={<div role="status" className="workspace-page-loading">Loading page…</div>}><Outlet /></Suspense>
     </main>
     <footer className="workspace-footer">

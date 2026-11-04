@@ -1,20 +1,21 @@
-# Reviewed template only; this file is not applied by the development test suite.
 services:
   - type: web
     name: tradepilot-backend
-    runtime: node
+    env: node
     plan: free
-    autoDeployTrigger: "off"
     rootDir: tradepilot-backend
+    # Build only. Database migrations require a separately approved operator operation.
     buildCommand: npm ci --include=dev && npm run build
     startCommand: npm start
     healthCheckPath: /health
     envVars:
-      - key: DATABASE_URL
-        sync: false
-      - key: JWT_SECRET
-        sync: false
-      - key: CORS_ORIGIN
-        sync: false
       - key: NODE_ENV
         value: production
+      - key: DATABASE_URL
+        sync: false # set manually in the Render dashboard
+      - key: JWT_SECRET
+        sync: false # set manually in the Render dashboard
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: CORS_ORIGIN
+        sync: false # your deployed Vercel frontend URL

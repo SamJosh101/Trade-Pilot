@@ -1,12 +1,14 @@
 import { useState, useLayoutEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, Search, Command, ChevronDown, Plus, ArrowUpRight, UserRound } from 'lucide-react';
+import { Menu, Search, Command, ChevronDown, Plus, ArrowUpRight } from 'lucide-react';
 import { useAccounts } from '../context/AccountContext';
 import { destinations } from '../constants/navigation';
 import { Dialog } from './WorkspaceUI';
+import {useAuth} from '../hooks/useAuth';
 export default function Navbar({ onMenu }: {
     onMenu: () => void;
 }) {
+    const {user}=useAuth();
     const { pathname } = useLocation();
     const navigate = useNavigate();
     const { accounts, activeAccountId, setActiveAccount, isLoading } = useAccounts();
@@ -22,9 +24,9 @@ export default function Navbar({ onMenu }: {
     <button className="icon-button mobile-menu" onClick={onMenu} aria-label="Open navigation">
     <Menu size={20}/>
     </button>
-    <span className="header-wordmark">TradePilot</span>
+    <span className="header-wordmark">Workspace</span>
     <span className="header-divider">/</span>
-    <span>{pathname.includes('/edit') ? 'Edit trade' : pathname.endsWith('/new') ? 'New trade' : current?.label ?? 'Workspace'}</span>
+    <span>{current?.label ?? 'Workspace'}</span>
     </div>
     <div className="header-tools">
     <button className="command-trigger" onClick={() => setOpen(true)} aria-label="Open command menu">
@@ -47,7 +49,7 @@ export default function Navbar({ onMenu }: {
     <Link className="icon-button header-add" to="/trades/new" aria-label="New trade">
     <Plus size={18}/>
     </Link>
-    <Link className="icon-button header-profile" to="/settings" aria-label="Profile and preferences"><UserRound size={17}/></Link>
+    <Link className="icon-button header-profile" to="/settings" aria-label="Profile and preferences">{user?.name?.slice(0,1).toUpperCase()??'T'}</Link>
     </div>
     </header>{error && <div className="notice error" role="alert">{error}</div>}{open && <Dialog title="Go anywhere" onClose={() => setOpen(false)} className="command-dialog">
         <input autoFocus aria-label="Search destinations" placeholder="Search pages and actions…" value={query} onChange={e => setQuery(e.target.value)}/>
