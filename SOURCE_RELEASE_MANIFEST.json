@@ -1,7 +1,7 @@
 {
-  "parentCommit": "6811a4c7898316a06d0f0dc0e6266b80b73688a1",
+  "parentCommit": "a5b3cf17afbafc59de2d770affafdb7be1f20b75",
   "approvedSourceDigest": "b06441fa81548da932fdecb9c48847f1e391b7be2c1634f7ddca6cae13622539",
-  "sourceDigestSha256": "98521f6dc2b5b2e66c726dd075e1d538b2a0bc022ad9e39e812519eb7a319919",
+  "sourceDigestSha256": "f11952837dfcc7861e063a91c4cdec058bf91293fe4e86b556fd3033949d8404",
   "fileCount": 236,
   "compatibilityChanges": [
     "tradepilot-backend/src/config/env.ts",
@@ -996,8 +996,8 @@
     },
     {
       "path": "tradepilot-frontend/src/pages/TradeEntry.tsx",
-      "bytes": 19712,
-      "sha256": "8808724fa2d8f5004101e9c6dea3d7bcbade39c76b3cd1e9b1748089e9df6ea6"
+      "bytes": 19923,
+      "sha256": "d2264d66cf61e321b134c3042bb17ae0452e6068aaf934cd08f22f1d99c834e9"
     },
     {
       "path": "tradepilot-frontend/src/pages/TradeJournal.tsx",
@@ -1199,5 +1199,6 @@
       "bytes": 220,
       "sha256": "0c03207436c9eb3f2f35ec9ff13d17c6ae7e4c8d46ad394a556578cf12c80d74"
     }
-  ]
+  ],
+  "releaseChange": "Display selected trade screenshots in the existing screenshot area"
 }
