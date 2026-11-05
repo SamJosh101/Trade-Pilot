@@ -30,3 +30,28 @@ body{font-size:14px;color:var(--color-text-primary)}h1{font-size:34px;line-heigh
 .pair-field{position:relative}.pair-field-icon{position:absolute;left:9px;top:29px;pointer-events:none}.pair-field-icon .pair-avatar{width:28px;height:24px;border-radius:6px;background:none}#main-content .pair-field input{padding-left:46px}.library-icon>img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
 
 .calendar-legend{display:flex;gap:9px;align-items:center;color:var(--color-text-muted);font-size:10px}.calendar-legend i{width:8px;height:8px;border-radius:50%;display:inline-block}.calendar-legend i:nth-of-type(2){margin-left:6px}
+
+/* Shared legacy widgets must follow the selected workspace theme too. */
+:root{color-scheme:dark;--color-warning:#d6c297}
+:root[data-theme=light]{color-scheme:light;--color-warning:#7b5a15}
+.table-scroll{background:var(--color-bg-surface);border-color:var(--color-border)}
+.profile-value,.account-scope strong,.account-context-name,.coverage-row strong,.settlement-heading>span:first-child,.segmented button.active,.settings-nav .active,.settings-nav button:hover,.settings-nav a:hover{color:var(--color-text-primary)}
+.check-field,.realized-metrics dt,.outcome-legend span,.direction-strip,.notes-list-item span,.import-preview-row pre,.day-server-note-list span,.catalog-item p,.catalog-item small,.day-drawer-context>span,.day-actual small,.day-actual div>span,.day-stat-grid dt,.day-empty,.performance-neutral{color:var(--color-text-secondary)}
+.account-selector-label,.account-scope,.field small,.filter-toolbar .date-field,.pagination,.journal-metric .metric-label,.journal-metric .metric-help,.provenance-label,.settlement-heading,.realized-metrics dd small,.realized-metrics div>span,.coverage-row span,.outcome-donut span,.recent-list small,.recent-list .recent-date,.settings-group-label,.settings-nav button,.settings-nav a,.definition-grid dt,.notes-folder-button small,.notes-help,.notes-list-item small,.notes-editor-state{color:var(--color-text-muted)}
+.field-error,.text-red-700{color:var(--color-negative)}
+.badge.partial,.performance-middle{color:var(--color-warning)}
+.badge.partial{background:color-mix(in srgb,var(--color-warning) 14%,var(--color-bg-surface))}
+.profile-value,.account-empty-notice,.filter-popover-content,.segmented,.notes-workspace,.notes-list-item,.day-server-note-list a,.catalog-item,.catalog-preview{background:var(--color-bg-input);border-color:var(--color-border)}
+.account-empty-notice{color:var(--color-text-secondary)}
+.segmented button{color:var(--color-text-muted)}
+.segmented button.active,.settings-nav .active,.settings-nav button:hover,.settings-nav a:hover{background:var(--color-bg-surface-hover)}
+.field>input:hover,.field>select:hover,.field>textarea:hover{border-color:var(--color-border-strong)}
+.header-profile,.rail-avatar{overflow:hidden;flex-shrink:0}
+.header-profile img,.rail-avatar img{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.profile-image-picker{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.profile-image-picker input[hidden]{display:none}
+.page-heading p,.empty-state p{color:var(--color-text-secondary)}
+.command-trigger{color:var(--color-text-secondary)}
+.command-trigger kbd{color:var(--color-text-muted);border-color:var(--color-border)}
+.command-results button{color:var(--color-text-primary)}
+.empty-symbol{color:var(--color-info)}

@@ -1,9 +1,30 @@
 import {useEffect,useState} from 'react';
 import api from '../api/apiClient';
 import {useAuth} from '../hooks/useAuth';
+import {PROFILE_IMAGE_CHANGED} from '../services/ownedMediaService';
+
 export default function ProfileAvatar(){
- const {user,token}=useAuth();const [reload,setReload]=useState(0),[image,setImage]=useState<{token:string|null;src:string}>({token:null,src:''});
- useEffect(()=>{const refresh=()=>setReload(n=>n+1);window.addEventListener('tradepilot:profile-media-changed',refresh);return()=>window.removeEventListener('tradepilot:profile-media-changed',refresh);},[]);
- useEffect(()=>{const c=new AbortController();let url='';setImage({token,src:''});if(token)api.get<{asset:{contentPath:string}|null}>('/media/current',{params:{target:'profile'},signal:c.signal}).then(async r=>{if(r.data.asset){const response=await api.get<Blob>(r.data.asset.contentPath,{responseType:'blob',signal:c.signal});url=URL.createObjectURL(response.data);if(!c.signal.aborted)setImage({token,src:url});}}).catch(()=>{});return()=>{c.abort();if(url)URL.revokeObjectURL(url);};},[token,reload]);
- return image.token===token&&image.src?<img src={image.src} alt="Your profile" style={{width:'100%',height:'100%',objectFit:'cover',borderRadius:'inherit'}}/>:<>{user?.name?.slice(0,1).toUpperCase()??'T'}</>;
+ const {user,token}=useAuth();
+ const [revision,setRevision]=useState(0);
+ const [image,setImage]=useState<{token:string|null;src:string}>({token:null,src:''});
+ useEffect(()=>{
+  const refresh=()=>setRevision(n=>n+1);
+  window.addEventListener(PROFILE_IMAGE_CHANGED,refresh);
+  return()=>window.removeEventListener(PROFILE_IMAGE_CHANGED,refresh);
+ },[]);
+ useEffect(()=>{
+  const controller=new AbortController();let url='';
+  setImage({token,src:''});
+  if(token)api.get<{asset:{contentPath:string}|null}>('/media/current',{params:{target:'profile'},signal:controller.signal})
+   .then(async response=>{
+    if(controller.signal.aborted||!response.data.asset)return;
+    const content=await api.get<Blob>(response.data.asset.contentPath,{responseType:'blob',signal:controller.signal});
+    if(controller.signal.aborted)return;
+    url=URL.createObjectURL(content.data);setImage({token,src:url});
+   }).catch(()=>{/* Keep the initial when no private image can be loaded. */});
+  return()=>{controller.abort();if(url)URL.revokeObjectURL(url);};
+ },[token,revision]);
+ return image.token===token&&image.src
+  ?<img src={image.src} alt="Your profile"/>
+  :<>{user?.name?.slice(0,1).toUpperCase()??'T'}</>;
 }

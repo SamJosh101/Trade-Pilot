@@ -3,6 +3,7 @@ import { Plus, ChevronDown } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { Brand } from './WorkspaceUI';
 import { destinations } from '../constants/navigation';
+import ProfileAvatar from './ProfileAvatar';
 export default function Sidebar({ expanded, onNavigate, mobile=false }: {
     expanded: boolean;
     mobile?: boolean;
@@ -24,7 +25,7 @@ export default function Sidebar({ expanded, onNavigate, mobile=false }: {
     <Plus size={22}/>
     <span className="rail-label">New trade</span>
     </Link>
-    <Link to="/settings" className="workspace-person" title={user?.name} aria-label="Profile settings"><span className="rail-avatar">{user?.name?.slice(0, 1).toUpperCase() ?? 'T'}</span><span className="rail-label"><strong>Personal trading</strong><small>{user?.name??'Your workspace'}</small></span><ChevronDown size={12}/></Link>
+    <Link to="/settings" className="workspace-person" title={user?.name} aria-label="Profile settings"><span className="rail-avatar"><ProfileAvatar/></span><span className="rail-label"><strong>Personal trading</strong><small>{user?.name??'Your workspace'}</small></span><ChevronDown size={12}/></Link>
     </div>
     </aside>;
 }
